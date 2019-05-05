@@ -6,3 +6,9 @@
 
 ## Požiadavky
 - [ ] CSS - responzívne + tlač
+
+---
+
+## Úloha č.3
+- [ ] generovanie hesiel
+- [ ] načítanie ```csv``` súboru pomocou ```PHP```
