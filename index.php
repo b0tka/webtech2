@@ -1,2 +1,2 @@
 <?php 
-echo "Hello world commit Luky";
+echo "Hello world commit by Dani";
