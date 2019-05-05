@@ -9,6 +9,13 @@
 
 ---
 
+## Úloha č.1
+
+## Úloha č.2
+
 ## Úloha č.3
 - [ ] generovanie hesiel
-- [ ] načítanie ```csv``` súboru pomocou ```PHP```
+- [ ] načítanie ```csv``` súboru pomocou ```php```
+- [ ] rozposlanie e-mailov
+- [ ] ukladanie udajov do databazy
+- [ ] formulár pre šablónu
