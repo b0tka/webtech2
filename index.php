@@ -1,2 +1,2 @@
 <?php 
-echo "Hello world commit Luki";
+echo "Initialize index.php";
