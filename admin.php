@@ -1,5 +1,5 @@
 <?php
-if(!empty($_FILES)) {
+if((!empty($_FILES)) && (isset($_POST['course_title'])) && ($_POST['course_title'] != "")) {
 
     $csv = $_FILES['csv_file'];
     $file_target = "files/" . $csv['name'];
@@ -8,14 +8,8 @@ if(!empty($_FILES)) {
         move_uploaded_file($csv['tmp_name'], $file_target);
     }
 
-
-    $file_content = array();
-    if (($handle = fopen($file_target, "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-            $file_content[] = $data;
-        }
-        fclose($handle);
-    }
+    $delimiter = ($_POST['delimiter'] == "semicolon") ? ";" : ",";
+    $file_content = parseCSVFile($file_target, $delimiter);
 
     $col_headers = $file_content[0];
     $col_values = array();
@@ -27,15 +21,32 @@ if(!empty($_FILES)) {
 
     $course_title = $_POST['course_title'];
     $course_year = $_POST['course_year'];
-    $course_id;
 
+    $db->startTrans();
+
+    $course_id;
     if(!courseAlreadyExists($db, $course_title, $course_year)) {
         addNewCourse($db, $course_title, $course_year);
         $course_id = $db->insert_Id();
     } else {
         $course_id = getCourseId($db, $course_title, $course_year);
     }
+
     addCourseDataColumns($db, $course_id, $col_headers, $col_values);
+
+    $db->completeTrans();
+}
+
+
+function parseCSVFile($file, $delimiter) {
+    $file_content = array();
+    if (($handle = fopen($file, "r")) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
+            $file_content[] = $data;
+        }
+        fclose($handle);
+    }
+    return $file_content;
 }
 
 function courseAlreadyExists($db, $course_title, $course_year) {
@@ -97,18 +108,16 @@ function addStudent($db, $student_id, $name, $surname) {
     $result_insert_student = $db->Execute($query_insert_student) or die ("Chyba v query: $query_insert_student " . $db->ErrorMsg());
 }
 
-
 function initDBConnection() {
     require_once("config.php");
     require_once("lib/adodb5/adodb.inc.php");
 
     $db = NewADOConnection('mysqli');
-    $db->Connect($hostname, $username, $password, $dbname);
+    $db->Connect(HOSTNAME, USERNAME, PASSWORD, DBNAME);
     $db->SetCharSet('utf8');
 
     return $db;
 }
-
 ?>
 
 <html>
@@ -121,18 +130,22 @@ function initDBConnection() {
     Vyber školský rok:
 
     <select name="course_year">
-        <option value="2016">2016</option>
-        <option value="2017">2017</option>
-        <option value="2018">2018</option>
-        <option value="2019">2019</option>
+        <option value="ZS 2015/2016">ZS 2015/2016</option>
+        <option value="LS 2015/2016">LS 2015/2016</option>
+        <option value="ZS 2016/2017">ZS 2016/2017</option>
+        <option value="LS 2016/2017">LS 2016/2017</option>
+        <option value="ZS 2017/2018">ZS 2017/2018</option>
+        <option value="LS 2017/2018">LS 2017/2018</option>
+        <option value="ZS 2018/2019">ZS 2018/2019</option>
+        <option value="LS 2018/2019">LS 2018/2019</option>
     </select><br>
     Zadaj názov predmetu:
     <input type="text" name="course_title"><br>
 
-    Oddeľovač v CSV súbore:blablabla
+    Oddeľovač v CSV súbore:
     <select name="delimiter">
-        <option value="period">.</option>
-        <option value="semicolon">;</option>
+        <option value="semicolon">  ;  </option>
+        <option value="comma">  ,  </option>
     </select><br>
 
     Vyber CSV súbor s výsledkami:<br>
