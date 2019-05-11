@@ -9,7 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 <header>
@@ -22,15 +22,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="./login.php">Úloha 1</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./history.php">Úloha 2</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="uloha3/index.php">Úloha 3</a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./login.php">Úloha 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./history.php">Úloha 2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="uloha3/index.php">Úloha 3</a>
+                </li>
             </ul>
                 <span class="navbar-text text-right text-white">
                         Username :
@@ -40,12 +40,12 @@
     </nav>
 </header>
 
-<div class="container-fluid root-container mt-3">
-<main>
-    <div class="container mt-5 px-5">
-<!--        core website-->
+<div class="container mt-3">
+    <div class="container-fluid">
+        <div class="col-sm-12 text-center" style="margin-top: 33%">
+            <a href="../general.admin/index.php" class="btn btn-primary">Admin</a>
+        </div>
     </div>
-</main>
 </div>
 
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
@@ -53,4 +53,3 @@
 </footer>
 </body>
 </html>
-
