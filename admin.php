@@ -1,42 +1,52 @@
 <?php
+
 if((!empty($_FILES)) && (isset($_POST['course_title'])) && ($_POST['course_title'] != "")) {
-
-    $csv = $_FILES['csv_file'];
-    $file_target = "files/" . $csv['name'];
-
-    if($csv['size'] < 2 * 1024 * 1024) {
-        move_uploaded_file($csv['tmp_name'], $file_target);
-    }
-
     $delimiter = ($_POST['delimiter'] == "semicolon") ? ";" : ",";
-    $file_content = parseCSVFile($file_target, $delimiter);
 
-    $col_headers = $file_content[0];
-    $col_values = array();
-    for($i = 1; $i < sizeof($file_content); $i++) {
-        $col_values[] = $file_content[$i];
+    if(($csv_file = validateAndUploadCSVFile($_FILES['csv_file'])) !== FALSE) {
+
+        $file_content = parseCSVFile($csv_file, $delimiter);
+
+        $col_headers = $file_content[0];
+        $col_values = array();
+        for ($i = 1; $i < sizeof($file_content); $i++) {
+            $col_values[] = $file_content[$i];
+        }
+
+        $db = initDBConnection();
+
+        $course_title = $_POST['course_title'];
+        $course_year = $_POST['course_year'];
+
+        $db->startTrans();
+
+        if (!courseAlreadyExists($db, $course_title, $course_year)) {
+            addNewCourse($db, $course_title, $course_year);
+            $course_id = $db->insert_Id();
+        } else {
+            $course_id = getCourseId($db, $course_title, $course_year);
+        }
+
+        addCourseDataColumns($db, $course_id, $col_headers, $col_values);
+
+        $db->completeTrans();
+
     }
-
-    $db = initDBConnection();
-
-    $course_title = $_POST['course_title'];
-    $course_year = $_POST['course_year'];
-
-    $db->startTrans();
-
-    $course_id;
-    if(!courseAlreadyExists($db, $course_title, $course_year)) {
-        addNewCourse($db, $course_title, $course_year);
-        $course_id = $db->insert_Id();
-    } else {
-        $course_id = getCourseId($db, $course_title, $course_year);
-    }
-
-    addCourseDataColumns($db, $course_id, $col_headers, $col_values);
-
-    $db->completeTrans();
 }
 
+function validateAndUploadCSVFile($uploaded_file) {
+    define(MB, 1024 * 1024);
+
+    $target_location = "files/" . $uploaded_file['name'];
+    $file_extension = pathinfo($uploaded_file['name'])['extension'];
+
+    if(($uploaded_file['size'] < 1*MB) && ($file_extension == "csv") ) {
+        move_uploaded_file($uploaded_file['tmp_name'], $target_location);
+        return $target_location;
+    } else {
+        return FALSE;
+    }
+}
 
 function parseCSVFile($file, $delimiter) {
     $file_content = array();
@@ -74,6 +84,7 @@ function getCourseId($db, $course_title, $course_year) {
     return $db->GetRow($query_select_course)['id'];
 
 }
+
 function addCourseDataColumns($db, $course_id, $col_headers, $col_values) {
     foreach($col_values as $row) {
         $student_id = $row[0];
@@ -98,7 +109,6 @@ function addCourseDataColumns($db, $course_id, $col_headers, $col_values) {
     }
 }
 
-
 function addStudent($db, $student_id, $name, $surname) {
     $student_id = $db->qstr($student_id);
     $name = $db->qstr($name);
@@ -118,6 +128,7 @@ function initDBConnection() {
 
     return $db;
 }
+
 ?>
 
 <html>
@@ -138,6 +149,8 @@ function initDBConnection() {
         <option value="LS 2017/2018">LS 2017/2018</option>
         <option value="ZS 2018/2019">ZS 2018/2019</option>
         <option value="LS 2018/2019">LS 2018/2019</option>
+        <option value="ZS 2019/2020">ZS 2019/2020</option>
+        <option value="LS 2019/2020">LS 2019/2020</option>
     </select><br>
     Zadaj názov predmetu:
     <input type="text" name="course_title"><br>
