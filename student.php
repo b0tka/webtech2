@@ -25,19 +25,16 @@ function getCourseData($db, $student_id, $course_id) {
     $course_id = $db->qstr($course_id);
 
     $query_select_course_data = "SELECT student.name AS student_name, student.surname AS student_surname, course.title AS course_title, course.year AS course_year, data_column.column_index, data_column.title AS column_title, data_column.data AS column_data
-from data_column
-join student on data_column.student_id = student.id
-join course on data_column.course_id = course.id
-where data_column.student_id = $student_id AND data_column.course_id = $course_id  
-ORDER BY data_column.column_index ASC";
+                                FROM data_column
+                                JOIN student ON data_column.student_id = student.id
+                                JOIN course ON data_column.course_id = course.id
+                                WHERE data_column.student_id = $student_id AND data_column.course_id = $course_id  
+                                ORDER BY data_column.column_index ASC";
 
     $result_select_course_data = $db->GetAll($query_select_course_data) or die ("Chyba v query: $query_select_course_data " . $db->ErrorMsg());
 
     return $result_select_course_data;
 
-//    echo "<pre>";
-//print_r($result_select_course_data);
-//    echo "</pre>";
 }
 
 function echoCourseTable($data) {

@@ -1,17 +1,11 @@
 <?php
 
 if((!empty($_FILES)) && (isset($_POST['course_title'])) && ($_POST['course_title'] != "")) {
-    $delimiter = ($_POST['delimiter'] == "semicolon") ? ";" : ",";
 
     if(($csv_file = validateAndUploadCSVFile($_FILES['csv_file'])) !== FALSE) {
 
-        $file_content = parseCSVFile($csv_file, $delimiter);
-
-        $col_headers = $file_content[0];
-        $col_values = array();
-        for ($i = 1; $i < sizeof($file_content); $i++) {
-            $col_values[] = $file_content[$i];
-        }
+        $file_content = parseCSVFile($csv_file);
+        $table_data = splitToHeadersAndValues($file_content);
 
         $db = initDBConnection();
 
@@ -27,7 +21,7 @@ if((!empty($_FILES)) && (isset($_POST['course_title'])) && ($_POST['course_title
             $course_id = getCourseId($db, $course_title, $course_year);
         }
 
-        addCourseDataColumns($db, $course_id, $col_headers, $col_values);
+        processCourseData($db, $course_id, $table_data['headers'], $table_data['values']);
 
         $db->completeTrans();
 
@@ -48,7 +42,9 @@ function validateAndUploadCSVFile($uploaded_file) {
     }
 }
 
-function parseCSVFile($file, $delimiter) {
+function parseCSVFile($file) {
+    $delimiter = ($_POST['delimiter'] == "semicolon") ? ";" : ",";
+
     $file_content = array();
     if (($handle = fopen($file, "r")) !== FALSE) {
         while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
@@ -57,6 +53,18 @@ function parseCSVFile($file, $delimiter) {
         fclose($handle);
     }
     return $file_content;
+}
+
+function splitToHeadersAndValues($data) {
+    $col_headers = $data[0];
+    $col_values = array();
+    for ($i = 1; $i < sizeof($data); $i++) {
+        $col_values[] = $data[$i];
+    }
+    $result['headers'] = $col_headers;
+    $result['values'] = $col_values;
+
+    return $result;
 }
 
 function courseAlreadyExists($db, $course_title, $course_year) {
@@ -85,7 +93,7 @@ function getCourseId($db, $course_title, $course_year) {
 
 }
 
-function addCourseDataColumns($db, $course_id, $col_headers, $col_values) {
+function processCourseData($db, $course_id, $col_headers, $col_values) {
     foreach($col_values as $row) {
         $student_id = $row[0];
         $student_name_parts = explode(" ", $row[1]);

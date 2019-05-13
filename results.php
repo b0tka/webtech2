@@ -2,10 +2,28 @@
 
 if(isset($_POST['course_title']) and ($_POST['course_title'] != "")) {
 
-    $db = initDBConnection();
+    switch($_POST['submit']) {
+        case 'show':
+            showCourseResults();
+            break;
+        case 'delete':
+            deleteCourse();
+            break;
+        case 'print_to_pdf':
+            printToPDF();
+            break;
+    }
+}
 
+function showCourseResults() {
     $course_title = $_POST['course_title'];
     $course_year = $_POST['course_year'];
+
+    echo buildHTMLtable(getCourseResults($course_title, $course_year));
+}
+
+function getCourseResults($course_title, $course_year) {
+    $db = initDBConnection();
 
     $course_title = $db->qstr($course_title);
     $course_year = $db->qstr($course_year);
@@ -18,48 +36,49 @@ if(isset($_POST['course_title']) and ($_POST['course_title'] != "")) {
                                     (SELECT id FROM course WHERE course.title = $course_title and course.year = $course_year)
                                 ORDER BY student.id, data_column.column_index ASC";
 
-    $result_select_results = $db->GetAll($query_select_results);
-
-    echoTable($result_select_results);
+    return $db->GetAll($query_select_results);
 }
 
+function deleteCourse() {
+    $db = initDBConnection();
 
-
-
-function courseAlreadyExists($db, $course_title, $course_year) {
-    $course_title = $db->qstr($course_title);
-    $course_year = $db->qstr($course_year);
-
-    $query_course_exists = "SELECT count(*) as course_count FROM course WHERE title = $course_title AND year = $course_year";
-    $result_row = $db->GetRow($query_course_exists);
-    return $result_row['course_count'] != "0";
+    $course_title = $db->qstr($_POST['course_title']);
+    $course_year = $db->qstr($_POST['course_year']);
+    $query_delete_course = "DELETE FROM course WHERE course.title = $course_title AND course.year = $course_year";
+    $db->Execute($query_delete_course) or die ("Chyba v query: $query_delete_course " . $db->ErrorMsg());
 }
 
+function printToPDF() {
+    require_once ('lib/mpdf/mpdf.php');
 
+    $course_title = $_POST['course_title'];
+    $course_year = $_POST['course_year'];
 
-function getCourseId($db, $course_title, $course_year) {
-    $course_title = $db->qstr($course_title);
-    $course_year = $db->qstr($course_year);
-
-    $query_select_course = "SELECT * FROM course WHERE title = $course_title AND year = $course_year";
-    return $db->GetRow($query_select_course)['id'];
-
+    $mpdf=new mPDF('c','A4-L','','',32,25,27,25,16,13);
+    $css = "table { border: 2px solid black; border-collapse: collapse; } td, th { padding: 4px; border: 1px solid black; text-align: center; }";
+    $mpdf->useOnlyCoreFonts = true;
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($css,1);
+    $mpdf->WriteHTML(buildHTMLtable(getCourseResults($course_title, $course_year), 2));
+    $mpdf->Output('mpdf.pdf','I');
+    exit;
 }
 
-function echoTable($data) {
-    echo "<table>";
+function buildHTMLtable($data) {
+    $x = "";
+    $x .= "<table>";
 
     // echo table headers
     $index = 0;
-    echo "<tr>";
-    echo "<td>" . "ID študenta" . "</td><td>" . "Meno a priezvisko" . "</td>";
+    $x .= "<tr>";
+    $x .= "<th>" . "ID študenta" . "</th><th>" . "Meno a priezvisko" . "</th>";
 
     do {
-        echo "<th>" . $data[$index]['column_title'] . "</th>";
+        $x .= "<th>" . $data[$index]['column_title'] . "</th>";
         $index++;
     } while($data[$index]['column_index'] != '0');
 
-    echo "</tr>";
+    $x .= "</tr>";
 
     //echo table content
     $data_block_length = $index;
@@ -69,27 +88,18 @@ function echoTable($data) {
 //    prettyPrintArray($data_blocks);
 
     foreach($data_blocks as $student_data) {
-        echo "<tr>";
-        printTD($student_data[0]['id']);
-        printTD($student_data[0]['student_name'] . " " . $student_data[0]['student_surname']);
+        $x .= "<tr>";
+        $x .= "<td>" . $student_data[0]['id'] . "</td>";
+        $x .= "<td>" . $student_data[0]['student_name'] . " " . $student_data[0]['student_surname'] . "</td>";
         foreach ($student_data as $item) {
-            printTD($item['column_data']);
+            $x .= "<td>" . $item['column_data'] . "</td>";
         }
-        echo "</tr>";
+        $x .= "</tr>";
     }
 
-    echo "</table>";
+    $x .= "</table>";
 
-}
-
-function printTD($element) {
-    echo "<td>" . $element . "</td>";
-}
-
-function prettyPrintArray($array) {
-    echo "<pre>";
-    print_r($array);
-    echo "</pre>";
+    return $x;
 }
 
 function initDBConnection() {
@@ -103,7 +113,11 @@ function initDBConnection() {
     return $db;
 }
 
-
+function prettyPrintArray($array) {
+    echo "<pre>";
+    print_r($array);
+    echo "</pre>";
+}
 
 ?>
 
@@ -131,7 +145,9 @@ Zobrazenie výsledkov všetkých študentov pre daný predmet
     Zadaj názov predmetu:
     <input type="text" name="course_title"><br>
 
-    <input type="submit" value="Zobraziť výsledky" name="submit">
+    <button name='submit' value='show'>Zobraziť výsledky</button>
+    <button name='submit' value='delete'>Vymazať výsledky</button>
+    <button name='submit' value='print_to_pdf'>Vytlačiť do PDF</button>
 </form>
 
 </body>
