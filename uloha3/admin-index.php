@@ -17,6 +17,9 @@ if ($conn->connect_error) {
 $stmt = $conn->prepare("SET NAMES 'utf8';");
 $stmt->execute();
 
+/*Declaring error message variable*/
+$errormsg = " ";
+
 /*Funciton that generates random password with length of 15 characters,
 this password can include small letters, capitals and integers from 0 to 9*/
 function randomPassword()
@@ -37,7 +40,6 @@ last element of each index will be the passwords.*/
 if (!empty($_POST) && !empty($_FILES)) {
 
     $extension = pathinfo($_FILES["csv-file"]["name"], PATHINFO_EXTENSION);
-    $errormsg = "";
 
     /*If file has no .csv extension, cannot be parsed*/
     if ($extension != "csv") {
@@ -114,7 +116,7 @@ if (!empty($_POST) && !empty($_FILES)) {
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="../ckeditor/ckeditor.js"></script>
+    <script src="../ckeditor/ckeditor.js" charset="utf-8"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -152,10 +154,10 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="#">Slovenský</a>
                         <a class="dropdown-item" href="#">Anglický</a>
-                    </div>
+                    </div> 
                 </li>
             </ul>
-            <span class="navbar-text text-right text-white">Username :</span>
+            <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
             <a href="../general.admin/logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
         </div>
     </nav>
@@ -163,7 +165,8 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
 <!--HTML "PROGRAMMED" BY STEFAN-->
 <div class="container mt-3">
     <div class="container-fluid">
-        <form action="admin-index.php?mode=genpwd" enctype="multipart/form-data" method="post">
+        <h3>Generovanie hesiel</h3>
+        <form action="admin-index.php" enctype="multipart/form-data" method="post">
             <!--DIV container for the 'file selection' input-->
             <div class="row align-self-center">
                 <div class="col-sm-6" style="margin: 3% auto;">
@@ -189,7 +192,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
         </form>
     </div>
     <!--Seperator line to make beautiful designs on the website-->
-    <hr class="style1" style="margin-top: 2%">
+    <hr class="style1" style="margin-top: 3%">
 
     <!--Section for the second file upload and mail sending, when admin did the modifications to the csv and added
     new columns. Procedure:
@@ -202,28 +205,29 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
         6) Admin can send the file by pressing 'Poslať mail' button
     Mail will be sent using SMTP mail server stuba.sk-->
     <div class="container-fluid">
+        <h3>Konfigurácia emailu</h3>
         <form action="PHPMail.php" enctype="multipart/form-data" method="post">
             <!--DIV container for the 'file selection' input and template selection-->
             <div class="row">
                 <!--File browser for uploading from PC-->
                 <div class="col-sm-4" style="margin: 3% auto;">
-                    <input type="file" class="custom-file-input" id="customFileMail" name="mail-file">
+                    <input type="file" class="custom-file-input" id="customFileMail" required name="mail-file">
                     <label class="custom-file-label" for="customFileMail">Vyber súbor</label>
                 </div>
                 <!--Selection for separator by which final csv can be separated and parsed-->
                 <div class="input-group col-sm-4" style="margin: 3% auto;">
-                    <select class="custom-select " id="inputGroupSelect03" name="delimiter-mail">
+                    <select class="custom-select" required id="inputGroupSelect03" name="delimiter-mail">
                         <option value="none" selected>Vyber...</option>
                         <option value=";">;</option>
                         <option value=",">,</option>
                     </select>
                     <div class="input-group-append">
-                        <label class="input-group-text" for="inputGroupSelect03">Oddeľovač</label>
+                        <label class="input-group-text btn-outline-danger" for="inputGroupSelect03">Oddeľovač</label>
                     </div>
                 </div>
                 <!--Selection for mail template that is saved in database-->
                 <div class="input-group col-sm-4" style="margin: 3% auto;">
-                    <select class="custom-select" id="templateSelection" name="templateSelection">
+                    <select class="custom-select" required id="templateSelection" name="templateSelection">
                         <option value="none" selected>Vyber...</option>
                         <?php
                         /*This section provides dynamic generation of options for mail templates.
@@ -240,48 +244,49 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                         ?>
                     </select>
                     <div class="input-group-append">
-                        <label class="input-group-text" for="templateSelection">Šablóna</label>
+                        <label class="input-group-text btn-outline-danger" for="templateSelection">Šablóna</label>
                     </div>
                 </div>
             </div>
             <div class="justify-content-center">
+                <h4 class="mb-4 mt-3">Údaje o odosieľateľovi</h4>
                 <!--Admin fills in his/her email-->
                 <div class="form-group col-sm-12 row justify-content-center">
-                    <label for="email" class="col-sm-2 col-form-label">Email</label>
+                    <label for="email" class="col-sm-2 col-form-label">Email<span class="required-star"> *</span></label>
                     <div class="col-sm-10">
-                        <input type="text" name="email" class="form-control" id="email"
+                        <input type="text" name="email" required class="form-control" id="email"
                                placeholder="email@example.com">
                     </div>
                 </div>
                 <!--Admin fills in his/her name-->
                 <div class="form-group col-sm-12 row justify-content-center">
-                    <label for="name" class="col-sm-2 col-form-label">Meno</label>
+                    <label for="name" class="col-sm-2 col-form-label">Meno<span class="required-star"> *</span></label>
                     <div class="col-sm-10">
-                        <input type="text" name="name" class="form-control" id="name"
+                        <input type="text" name="name" required class="form-control" id="name"
                                placeholder="Jožo Mrkvička">
-                    </div>
-                </div>
-                <!--Admin types his/her login to AIS LDAP to be able send mail using SMTP stuba.sk-->
-                <div class="form-group row col-sm-12 justify-content-center">
-                    <label for="login" class="col-sm-2 col-form-label">Login</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="login" class="form-control" id="login" placeholder="Zadaj login">
                     </div>
                 </div>
                 <!--Admin types his/her password to be able send mail using SMTP stuba.sk-->
                 <div class="form-group row col-sm-12 justify-content-center">
-                    <label for="password" class="col-sm-2 col-form-label">Heslo</label>
+                    <label for="password" class="col-sm-2 col-form-label">Heslo<span class="required-star"> *</span></label>
                     <div class="col-sm-10">
-                        <input type="password" name="password" class="form-control" id="password"
+                        <input type="password" name="password" required class="form-control" id="password"
                                placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;">
                     </div>
                 </div>
                 <!--Admin fills in the subject of the mail-->
                 <div class="form-group row col-sm-12 justify-content-center">
-                    <label for="subjectMail" class="col-sm-2 col-form-label">Predmet</label>
+                    <label for="subjectMail" class="col-sm-2 col-form-label">Predmet<span class="required-star"> *</span></label>
                     <div class="col-sm-10">
-                        <input type="text" name="subjectMail" class="form-control" id="subjectMail"
+                        <input type="text" name="subjectMail" required class="form-control" id="subjectMail"
                                placeholder="Zadaj predmet mailu">
+                    </div>
+                </div>
+                <!--Admin can add attachments-->
+                <div class="form-group row col-sm-12 justify-content-center">
+                    <label for="mailAttachment" class="col-sm-2 col-form-label">Príloha</label>
+                    <div class="col-sm-10">
+                        <input type="file" name="mailAttachment" id="mailAttachment">
                     </div>
                 </div>
                 <!--TextArea with CKEditor what is used for editing the inserted template-->
@@ -299,7 +304,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                 </div>
                 <!--Button to submit the form and send mail-->
                 <div class="col-sm-12 text-center" style="margin-top: 2%">
-                    <button type="submit" name="submitMail" class="btn btn-primary">Poslať maily</button>
+                    <button type="submit" name="submitMail" class="btn btn-success">Poslať maily</button>
                 </div>
             </div>
         </form>

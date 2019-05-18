@@ -29,16 +29,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="./login.php">Úloha 1</a>
+                    <a class="nav-link" href="../uloha1/admin-index.php">Úloha 1</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./history.php">Úloha 2</a>
+                    <a class="nav-link" href="../uloha2/admin-index.php">Úloha 2</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha3/admin-index.php">Úloha 3</a>
                 </li>
             </ul>
-            <span class="navbar-text text-right text-white">Username :</span>
+            <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
             <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
         </div>
     </nav>

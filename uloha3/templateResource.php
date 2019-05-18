@@ -6,6 +6,9 @@
  * Time: 18:49
  */
 include_once("../config.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 /*Getting information from services call*/
 $method = $_SERVER['REQUEST_METHOD'];
@@ -21,14 +24,16 @@ if ($conn->connect_error) {
 function getTemplateTextByID($id, $conn){
     $sqlTemplate = "SELECT * FROM template WHERE id=".$id;
     $resultTemplate = $conn->query($sqlTemplate);
-    $templateText = "ZIADNY VYSLEDOK";
+    $template = "ZIADNY VYSLEDOK";
     if ($resultTemplate->num_rows > 0) {
         while($row = $resultTemplate->fetch_assoc()) {
-            $templateText = $row["content"];
+            $template = $row["content"];
         }
     }
-    return $templateText;
+    return $template;
 }
 
-echo getTemplateTextByID($uriParsed[6],$conn);
+$template = getTemplateTextByID($uriParsed[5], $conn);
+
+echo $template;
 ?>

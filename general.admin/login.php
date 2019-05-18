@@ -16,13 +16,33 @@
 
     if (isset($_POST['login']) and isset($_POST['name']) and isset($_POST['password'])) {
 
-        // tu bude nejake overovanie mena a hesla pre admina
+        $login = htmlspecialchars($_POST['name']);
+        $passwd = htmlspecialchars($_POST['password']);
 
-        setcookie('isAdmin', 'admin', strtotime("tomorrow"), '/');
-        header('Location: index.php');
+        include_once ('../config.php');
+
+        $conn = new mysqli($serverName, $userName, $password, $dbName);
+        if ($conn->connect_error) {
+            die("Connection to MySQL server failed. " . $conn->connect_error);
+        }
+        $stmt = $conn->prepare("SET NAMES 'utf8';");
+        $stmt->execute();
+
+        $sql = "SELECT * FROM admin";
+
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $hash = $row['password'];
+            $name = $row['name'];
+
+            if (password_verify($passwd, $hash) && $name === $login) {
+                setcookie('isAdmin', 'admin', strtotime("tomorrow"), '/');
+                header('Location: index.php');
+            }
+        }
     }
-
-
 
     if(isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] === 'admin') {
         header('Location:index.php');
@@ -63,7 +83,8 @@
                                         <div class="form-group">
                                             <label class="col-sm-12" for="discipline">Heslo:</label>
                                             <div class="col-sm-12">
-                                                <input type="password" class="form-control" required name="password">
+                                                <input type="password" class="form-control" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+                                                       required name="password">
                                             </div>
                                         </div>
                                     </div>
