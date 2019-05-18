@@ -4,6 +4,8 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
     header("Location:http://147.175.121.210:8117/webte2/general.admin/login.php");
 }
 
+
+
 if((!empty($_FILES)) && (isset($_POST['course_title'])) && ($_POST['course_title'] != "")) {
 
     if(($csv_file = validateAndUploadCSVFile($_FILES['csv_file'])) !== FALSE) {
@@ -56,6 +58,8 @@ function parseCSVFile($file) {
         }
         fclose($handle);
     }
+
+    unlink($file);
     return $file_content;
 }
 
@@ -149,6 +153,16 @@ function initDBConnection() {
 
 ?>
 
+<?php
+if(isset($_GET['lang'])) {
+    setcookie('lang', htmlspecialchars($_GET['lang']), strtotime("tomorrow"), '/');
+    header("Location:admin-index.php");
+}
+
+if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
+
+?>
+
 
 <!DOCTYPE html>
 <html lang="sk">
@@ -188,6 +202,16 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha3/admin-index.php">Úloha 3</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Jazyk
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="?lang=sk">Slovenský</a>
+                        <a class="dropdown-item" href="?lang=en">Anglický</a>
+                    </div>
                 </li>
             </ul>
             <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
@@ -252,5 +276,128 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
     <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
 </footer>
+
+<?php
+} elseif($_COOKIE['lang'] == 'en') {
+?>
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ADMIN</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<?php
+if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
+{
+    header("Location:login.php");
+}
+?>
+<body>
+    <header>
+        <nav class="navbar navbar-light navbar-custom navbar-expand-lg">
+            <a class="navbar-brand" href="./index.php">
+                <img src="admin.png" width="100" height="55" alt="admin">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../uloha1/admin-index.php">Task 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../uloha2/admin-index.php">Task 2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../uloha3/admin-index.php">Task 3</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Language
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="?lang=sk">Slovak</a>
+                            <a class="dropdown-item" href="?lang=en">English</a>
+                        </div>
+                    </li>
+                </ul>
+                <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
+                <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
+            </div>
+        </nav>
+    </header>
+    <div>
+        <div class="col-sm-12 text-center">
+            <a class="btn btn-primary" href="results.php">Go to results page</a>
+        </div>
+        <main>
+            <div class="container mt-3">
+                <div class="container-fluid">
+                    <h3>Upload CSV results file</h3>
+                    <form action="admin-index.php" method="post" enctype="multipart/form-data">
+
+                        <div class="row">
+                            <div class="col-sm-6" style="margin: 3% auto;">
+                                <select class="custom-select" name="course_year">
+                                    <option value="ZS 2015/2016">ZS 2015/2016</option>
+                                    <option value="LS 2015/2016">LS 2015/2016</option>
+                                    <option value="ZS 2016/2017">ZS 2016/2017</option>
+                                    <option value="LS 2016/2017">LS 2016/2017</option>
+                                    <option value="ZS 2017/2018">ZS 2017/2018</option>
+                                    <option value="LS 2017/2018">LS 2017/2018</option>
+                                    <option value="ZS 2018/2019">ZS 2018/2019</option>
+                                    <option value="LS 2018/2019">LS 2018/2019</option>
+                                    <option value="ZS 2019/2020">ZS 2019/2020</option>
+                                    <option value="LS 2019/2020">LS 2019/2020</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6" style="margin: 3% auto;">
+                                <input type="text" class="form-control" name="course_title" placeholder="Course title:">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6" style="margin: 3% auto;">
+                                <input type="file" class="custom-file-input" id="customFile" name="csv_file">
+                                <label class="custom-file-label" for="customFile">Choose CSV file:</label>
+                            </div>
+                            <div class="input-group col-sm-6" style="margin: 3% auto;">
+                                <select class="custom-select" id="inputGroupSelect02" name="delimiter">
+                                    <option value="semicolon">;</option>
+                                    <option value="comma">,</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <label class="input-group-text" for="inputGroupSelect02">Delimiter</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 text-center">
+                            <button type="submit" name="submit" class="btn btn-primary">Upload CSV and create course</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
+        <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
+    </footer>
+
+    <?php
+
+}
+
+?>
+
 </body>
 </html>

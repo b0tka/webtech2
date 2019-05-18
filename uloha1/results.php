@@ -147,6 +147,15 @@ function prettyPrintArray($array) {
 
 ?>
 
+<?php
+if(isset($_GET['lang'])) {
+    setcookie('lang', htmlspecialchars($_GET['lang']), strtotime("tomorrow"), '/');
+    header("Location:results.php");
+}
+
+if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
+
+?>
 
 
 <!DOCTYPE html>
@@ -187,6 +196,16 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha3/admin-index.php">Úloha 3</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Jazyk
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="?lang=sk">Slovenský</a>
+                        <a class="dropdown-item" href="?lang=en">Anglický</a>
+                    </div>
                 </li>
             </ul>
             <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
@@ -241,5 +260,117 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
     <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
 </footer>
+
+<?php
+} elseif($_COOKIE['lang'] == 'en') {
+?>
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ADMIN</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<?php
+if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
+{
+    header("Location:login.php");
+}
+?>
+<header>
+    <nav class="navbar navbar-light navbar-custom navbar-expand-lg">
+        <a class="navbar-brand" href="./index.php">
+            <img src="admin.png" width="100" height="55" alt="admin">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../uloha1/admin-index.php">Task 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../uloha2/admin-index.php">Task 2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../uloha3/admin-index.php">Task 3</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Language
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="?lang=sk">Slovak</a>
+                        <a class="dropdown-item" href="?lang=en">English</a>
+                    </div>
+                </li>
+            </ul>
+            <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
+            <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
+        </div>
+    </nav>
+</header>
+
+<div class="container-fluid root-container mt-3">
+    <main>
+        <div class="container mt-5 px-5">
+            <div class="container-fluid">
+
+                <form action="results.php" method="post" ><br>
+                    <div class="row">
+                        <h3>All students' results of the specified course</h3>
+                        <div class="col-sm-6" style="margin: 3% auto;">
+                            Choose year:
+                            <select name="course_year" class="custom-select">
+                                <?php echoOptions(fetchListFromDB('year')); ?>
+                            </select>
+                        </div>
+                        <div class="col-sm-6" style="margin: 3% auto;">
+                            Choose course title:
+                            <select name="course_title" class="custom-select">
+                                <?php echoOptions(fetchListFromDB('title')); ?>
+                            </select>
+                        </div>
+                    </div>
+                    <!--Button to submit the form-->
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button name='submit' value='show' class="btn btn-primary">Show results</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button name='submit' value='delete' class="btn btn-primary" >Delete results</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button name='submit' value='print_to_pdf' class="btn btn-primary">Print to PDF</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </main>
+</div>
+<br><br>
+<?php echo $course_results;
+?>
+
+<footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
+    <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
+</footer>
+
+    <?php
+
+}
+
+?>
 </body>
 </html>
