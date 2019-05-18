@@ -6,6 +6,9 @@
  * Time: 18:49
  */
 include_once("../config.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 /*Getting information from services call*/
 $method = $_SERVER['REQUEST_METHOD'];

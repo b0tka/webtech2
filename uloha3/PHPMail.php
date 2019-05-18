@@ -75,6 +75,9 @@ if (isset($_POST['submitMail'])) {
                             if($csv_header[$i] === 'email' or $csv_header[$i] === 'Email') {
                                 $destMail = $data[$i];
                             }
+                            if($csv_header[$i] === 'login' or $csv_header[$i] === 'Login') {
+                                $ais_login = $data[$i];
+                            }
                         }
                         /*Inserting the name of the sender to the and of the mail*/
                         $mail_body = str_replace("{{sender}}", $name, $mail_body);
@@ -120,13 +123,14 @@ if (isset($_POST['submitMail'])) {
                         $mail->send();
 
                         /*Upload history logs of sending email into mail_history table in projekt-uloha1 database*/
+                        $date_time = date('Y-m-d H:i:s', time() + 2 * 3600);
                         $sql = "INSERT INTO mail_history (date, username, subject, template_id)
-                                        VALUES (now(), '$valueOfFourthRow', '$subject', '$template_id')";
+                                        VALUES ('$date_time', '$ais_login', '$subject', '$template_id')";
                         if ($conn->query($sql)) {
-                            echo 'Message has been sent';
+                            //echo 'Message has been sent';
                         }
                     } catch (Exception $e) {
-                        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                        //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                     }
                     $index++;
 
@@ -136,5 +140,6 @@ if (isset($_POST['submitMail'])) {
         }
     }
 
-    echo $errormsg;
+    //echo $errormsg;
+    echo "<script>window.location = 'admin-index.php'</script>";
 }

@@ -128,7 +128,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="../ckeditor/ckeditor.js" charset="utf-8"></script>
+    <script src="ckeditor/ckeditor.js" charset="utf-8"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -169,7 +169,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                     </div>
                 </li>
             </ul>
-            <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
+            <span class="navbar-text text-right text-white">Používateľ: admin &nbsp;</span>
             <a href="../general.admin/logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
         </div>
     </nav>
@@ -182,13 +182,13 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
             <!--DIV container for the 'file selection' input-->
             <div class="row align-self-center">
                 <div class="col-sm-6" style="margin: 3% auto;">
-                    <input type="file" class="custom-file-input" id="customFile" name="csv-file">
+                    <input type="file" class="custom-file-input" id="customFile" name="csv-file" required>
                     <label class="custom-file-label" for="customFile">Vyber súbor</label>
                 </div>
                 <!--Selection for separator by which csv can be separated and parsed-->
                 <div class="input-group col-sm-6" style="margin: 3% auto;">
-                    <select class="custom-select" id="inputGroupSelect02" name="delimiter">
-                        <option value="none" selected>Vyber...</option>
+                    <select class="custom-select" id="inputGroupSelect02" name="delimiter" required>
+                        <option value="" selected>Vyber...</option>
                         <option value=";">;</option>
                         <option value=",">,</option>
                     </select>
@@ -361,7 +361,7 @@ echo "<div class='err-msg-cont'>" . $errormsg . "</div>";
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="../ckeditor/ckeditor.js" charset="utf-8"></script>
+    <script src="ckeditor/ckeditor.js" charset="utf-8"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -415,13 +415,13 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
             <!--DIV container for the 'file selection' input-->
             <div class="row align-self-center">
                 <div class="col-sm-6" style="margin: 3% auto;">
-                    <input type="file" class="custom-file-input" id="customFile" name="csv-file">
+                    <input type="file" class="custom-file-input" id="customFile" name="csv-file" required>
                     <label class="custom-file-label" for="customFile">Select file</label>
                 </div>
                 <!--Selection for separator by which csv can be separated and parsed-->
                 <div class="input-group col-sm-6" style="margin: 3% auto;">
-                    <select class="custom-select" id="inputGroupSelect02" name="delimiter">
-                        <option value="none" selected>Select...</option>
+                    <select class="custom-select" id="inputGroupSelect02" name="delimiter" required>
+                        <option value="" selected>Select...</option>
                         <option value=";">;</option>
                         <option value=",">,</option>
                     </select>
