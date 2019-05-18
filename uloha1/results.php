@@ -201,26 +201,32 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
             <div class="container-fluid">
 
                 <form action="results.php" method="post" ><br>
-                    <div class="row align-self-center">
+                    <div class="row">
                         <h3>Zobrazenie výsledkov všetkých študentov pre daný predmet</h3>
-                        <div class="col-sm-4" style="margin: 3% auto;">
+                        <div class="col-sm-6" style="margin: 3% auto;">
                             Vyber školský rok:
-                            <select name="course_year">
+                            <select name="course_year" class="custom-select">
                                 <?php echoOptions(fetchListFromDB('year')); ?>
                             </select>
                         </div>
                         <div class="col-sm-6" style="margin: 3% auto;">
                             Zadaj názov predmetu:
-                            <select name="course_title">
+                            <select name="course_title" class="custom-select">
                                 <?php echoOptions(fetchListFromDB('title')); ?>
                             </select>
                         </div>
                     </div>
                     <!--Button to submit the form-->
-                    <div class="col-sm-10 text-center">
-                        <button name='submit' value='show'>Zobraziť výsledky</button>
-                        <button name='submit' value='delete'>Vymazať výsledky</button>
-                        <button name='submit' value='print_to_pdf'>Vytlačiť do PDF</button>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <button name='submit' value='show' class="btn btn-primary">Zobraziť výsledky</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button name='submit' value='delete' class="btn btn-primary" >Vymazať výsledky</button>
+                        </div>
+                        <div class="col-sm-3">
+                            <button name='submit' value='print_to_pdf' class="btn btn-primary">Vytlačiť do PDF</button>
+                        </div>
                     </div>
                 </form>
             </div>
