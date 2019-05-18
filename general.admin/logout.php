@@ -35,7 +35,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     <a class="nav-link" href="./history.php">Úloha 2</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../uloha3/admin.index.php">Úloha 3</a>
+                    <a class="nav-link" href="../uloha3/index.php">Úloha 3</a>
                 </li>
             </ul>
             <span class="navbar-text text-right text-white">Username :</span>

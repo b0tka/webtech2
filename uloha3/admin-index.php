@@ -1,5 +1,22 @@
 <?php
 /*-------START OF PHP CODE WRITTEN BY STEFAN--------*/
+/*Definition of inputs and external files*/
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+include_once("../config.php");
+
+/*Setting upp connection to projekt-uloha1 database*/
+$conn = new mysqli($serverName, $userName, $password, $dbName);
+if ($conn->connect_error) {
+    die("Connection to MySQL server failed. " . $conn->connect_error);
+}
+
+/*Setting up UTF8 for database entries*/
+$stmt = $conn->prepare("SET NAMES 'utf8';");
+$stmt->execute();
+
 /*Funciton that generates random password with length of 15 characters,
 this password can include small letters, capitals and integers from 0 to 9*/
 function randomPassword()
@@ -19,66 +36,64 @@ length of 15 characters will be generated. CSV will be parsed into 2D array wher
 last element of each index will be the passwords.*/
 if (!empty($_POST) && !empty($_FILES)) {
 
-    /*If file has no .csv extension, cannot be parsed*/
     $extension = pathinfo($_FILES["csv-file"]["name"], PATHINFO_EXTENSION);
+    $errormsg = "";
+
+    /*If file has no .csv extension, cannot be parsed*/
     if ($extension != "csv") {
-        echo "Súbor nie je typu .CSV <br>";
-        return;
-    }
+        $errormsg = "Súbor nie je typu .CSV <br>";
+    } /*Check whether the delimiter is set*/
+    else if ($_POST["delimiter"] == "none") {
+        $errormsg = "Oddeľovač nebol vybraný<br>";
+    } /*If everything is OK then continue*/
+    else {
+        /*Initializing variables for the file that is being parsed and
+        declaring target path to which file will be saved*/
+        $csv = $_FILES['csv-file'];
+        $csv_input = "files/" . $csv['name'];
 
-    /*Check whether the delimiter is set*/
-    if ($_POST["delimiter"] == "none") {
-        echo "Oddeľovač nebol vybraný<br>";
-        return;
-    }
-
-    /*Initializing variables for the file that is being parsed and
-    declaring target path to which file will be saved*/
-    $csv = $_FILES['csv-file'];
-    $csv_input = "files/" . $csv['name'];
-
-    /*Checking size of file and saving to the target folder*/
-    if ($csv['size'] < 2 * 1024 * 1024) {
-        move_uploaded_file($_FILES['csv-file']["tmp_name"], $csv_input);
-    }
-
-    /*Initializing array that will handle the file*/
-    $csv_array = array();
-    $index = 0;
-
-    /*Initializing output file to which the generated data will be written*/
-    $csv_output = fopen('passwords.csv', 'w');
-
-    if (($handle = fopen($csv_input, "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, $_POST["delimiter"])) !== FALSE) {
-
-            /*The first row is the coulmn header*/
-            if ($index == 0) {
-                $data[0] = "id";
-                $data[1] = "meno";
-                $data[2] = "email";
-                $data[3] = "login";
-                $data[4] = "password";
-                $csv_array[$index] = $data;
-            } /*From the second to the last row tha generated password
-            will be inserted*/
-            else {
-                $data[4] = randomPassword();
-                $csv_array[$index] = $data;
-            }
-
-            /*Writing generated line to the ouptut csv*/
-            fputcsv($csv_output, $csv_array[$index], $_POST["delimiter"]);
-
-            $index++;
+        /*Checking size of file and saving to the target folder*/
+        if ($csv['size'] < 2 * 1024 * 1024) {
+            move_uploaded_file($_FILES['csv-file']["tmp_name"], $csv_input);
         }
-        fclose($handle);
 
-        /*Telling the browser that we want to download the file*/
-        header('Content-Type: application/csv');
-        header('Content-Disposition: attachment; filename="passwords.csv"');
-        readfile("passwords.csv");
-        exit;
+        /*Initializing array that will handle the file*/
+        $csv_array = array();
+        $index = 0;
+
+        /*Initializing output file to which the generated data will be written*/
+        $csv_output = fopen('passwords.csv', 'w');
+
+        if (($handle = fopen($csv_input, "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, $_POST["delimiter"])) !== FALSE) {
+
+                /*The first row is the coulmn header*/
+                if ($index == 0) {
+                    $data[0] = "id";
+                    $data[1] = "meno";
+                    $data[2] = "email";
+                    $data[3] = "login";
+                    $data[4] = "password";
+                    $csv_array[$index] = $data;
+                } /*From the second to the last row tha generated password
+            will be inserted*/
+                else {
+                    $data[4] = randomPassword();
+                    $csv_array[$index] = $data;
+                }
+                /*Writing generated line to the ouptut csv*/
+                fputcsv($csv_output, $csv_array[$index], $_POST["delimiter"]);
+
+                $index++;
+            }
+            fclose($handle);
+
+            /*Telling the browser that we want to download the file*/
+            header('Content-Type: application/csv');
+            header('Content-Disposition: attachment; filename="passwords.csv"');
+            readfile("passwords.csv");
+            exit;
+        }
     }
 }
 /*-------END OF PHP CODE WRITTEN BY STEFAN--------*/
@@ -98,6 +113,8 @@ if (!empty($_POST) && !empty($_FILES)) {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="../ckeditor/ckeditor.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -122,7 +139,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                     <a class="nav-link" href="../general.admin/login.php">Úloha 1</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./history.php">Úloha 2</a>
+                    <a class="nav-link" href="../uloha2/admin-index.php">Úloha 2</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha3/admin-index.php">Úloha 3</a>
@@ -143,36 +160,158 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
         </div>
     </nav>
 </header>
-<!--File upload section MODIFIED BY STEFAN-->
+<!--HTML "PROGRAMMED" BY STEFAN-->
 <div class="container mt-3">
     <div class="container-fluid">
-        <form action="admin-index.php" enctype="multipart/form-data" method="post">
+        <form action="admin-index.php?mode=genpwd" enctype="multipart/form-data" method="post">
             <!--DIV container for the 'file selection' input-->
-            <div class="col-sm-12" style="width: 400px; margin: 3% auto;">
-                <input type="file" class="custom-file-input" id="customFile" name="csv-file">
-                <label class="custom-file-label" for="customFile">Choose file</label>
-            </div>
-            <!--Selection for separator by which csv can be separated and parsed-->
-            <div class="input-group col-sm-12" style="width: 430px; margin: 3% auto;">
-                <select class="custom-select" id="inputGroupSelect02" name="delimiter">
-                    <option value="none" selected>Vyber...</option>
-                    <option value=";">;</option>
-                    <option value=",">,</option>
-                </select>
-                <div class="input-group-append">
-                    <label class="input-group-text" for="inputGroupSelect02">Oddeľovač</label>
+            <div class="row align-self-center">
+                <div class="col-sm-6" style="margin: 3% auto;">
+                    <input type="file" class="custom-file-input" id="customFile" name="csv-file">
+                    <label class="custom-file-label" for="customFile">Vyber súbor</label>
+                </div>
+                <!--Selection for separator by which csv can be separated and parsed-->
+                <div class="input-group col-sm-6" style="margin: 3% auto;">
+                    <select class="custom-select" id="inputGroupSelect02" name="delimiter">
+                        <option value="none" selected>Vyber...</option>
+                        <option value=";">;</option>
+                        <option value=",">,</option>
+                    </select>
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="inputGroupSelect02">Oddeľovač</label>
+                    </div>
                 </div>
             </div>
             <!--Button to submit the form-->
-            <div class="col-sm-12 text-center" style="margin-top: 3%">
+            <div class="col-sm-12 text-center">
                 <button type="submit" name="submit" class="btn btn-primary">Nahraj CSV a generuj heslá</button>
             </div>
         </form>
     </div>
+    <!--Seperator line to make beautiful designs on the website-->
+    <hr class="style1" style="margin-top: 2%">
+
+    <!--Section for the second file upload and mail sending, when admin did the modifications to the csv and added
+    new columns. Procedure:
+        1) Admin selects modified csv file from his computer, that was created and downloaded in
+        first section of this page
+        2) Admin selects delimiter of csv
+        3) Admin selects template for mail sending from database
+        4) Admin fills in the required information (name, email, login, password, mail subject)
+        5) Admin can modify email using basic editor
+        6) Admin can send the file by pressing 'Poslať mail' button
+    Mail will be sent using SMTP mail server stuba.sk-->
+    <div class="container-fluid">
+        <form action="PHPMail.php" enctype="multipart/form-data" method="post">
+            <!--DIV container for the 'file selection' input and template selection-->
+            <div class="row">
+                <!--File browser for uploading from PC-->
+                <div class="col-sm-4" style="margin: 3% auto;">
+                    <input type="file" class="custom-file-input" id="customFileMail" name="mail-file">
+                    <label class="custom-file-label" for="customFileMail">Vyber súbor</label>
+                </div>
+                <!--Selection for separator by which final csv can be separated and parsed-->
+                <div class="input-group col-sm-4" style="margin: 3% auto;">
+                    <select class="custom-select " id="inputGroupSelect03" name="delimiter-mail">
+                        <option value="none" selected>Vyber...</option>
+                        <option value=";">;</option>
+                        <option value=",">,</option>
+                    </select>
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="inputGroupSelect03">Oddeľovač</label>
+                    </div>
+                </div>
+                <!--Selection for mail template that is saved in database-->
+                <div class="input-group col-sm-4" style="margin: 3% auto;">
+                    <select class="custom-select" id="templateSelection" name="templateSelection">
+                        <option value="none" selected>Vyber...</option>
+                        <?php
+                        /*This section provides dynamic generation of options for mail templates.
+                        This script selects all the templates from database and inserts their name
+                        to template selection as possible options.*/
+                        $sqlTemplatesName = "SELECT * FROM template t";
+                        $resultTemplateName = $conn->query($sqlTemplatesName);
+                        if ($resultTemplateName->num_rows > 0) {
+                            while($row = $resultTemplateName->fetch_assoc()) {
+                                echo " <option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+                                $niec = $row["content"];
+                            }
+                        }
+                        ?>
+                    </select>
+                    <div class="input-group-append">
+                        <label class="input-group-text" for="templateSelection">Šablóna</label>
+                    </div>
+                </div>
+            </div>
+            <div class="justify-content-center">
+                <!--Admin fills in his/her email-->
+                <div class="form-group col-sm-12 row justify-content-center">
+                    <label for="email" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="email" class="form-control" id="email"
+                               placeholder="email@example.com">
+                    </div>
+                </div>
+                <!--Admin fills in his/her name-->
+                <div class="form-group col-sm-12 row justify-content-center">
+                    <label for="name" class="col-sm-2 col-form-label">Meno</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="name" class="form-control" id="name"
+                               placeholder="Jožo Mrkvička">
+                    </div>
+                </div>
+                <!--Admin types his/her login to AIS LDAP to be able send mail using SMTP stuba.sk-->
+                <div class="form-group row col-sm-12 justify-content-center">
+                    <label for="login" class="col-sm-2 col-form-label">Login</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="login" class="form-control" id="login" placeholder="Zadaj login">
+                    </div>
+                </div>
+                <!--Admin types his/her password to be able send mail using SMTP stuba.sk-->
+                <div class="form-group row col-sm-12 justify-content-center">
+                    <label for="password" class="col-sm-2 col-form-label">Heslo</label>
+                    <div class="col-sm-10">
+                        <input type="password" name="password" class="form-control" id="password"
+                               placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;">
+                    </div>
+                </div>
+                <!--Admin fills in the subject of the mail-->
+                <div class="form-group row col-sm-12 justify-content-center">
+                    <label for="subjectMail" class="col-sm-2 col-form-label">Predmet</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="subjectMail" class="form-control" id="subjectMail"
+                               placeholder="Zadaj predmet mailu">
+                    </div>
+                </div>
+                <!--TextArea with CKEditor what is used for editing the inserted template-->
+                <div class="col-sm-12 row justify-content-center" style="margin-top: 3%">
+                    <div class="col-sm-1"></div>
+                <div class="form-group col-sm-10 purple-border">
+                    <textarea class="form-control" id="mailBodyTextArea" rows="60"></textarea>
+                    <script>
+                         /*Replace the <textarea id="editor1"> with a CKEditor
+                         instance, using default configuration.*/
+                        CKEDITOR.replace( 'mailBodyTextArea' );
+                    </script>
+                </div>
+                    <div class="col-sm-1"></div>
+                </div>
+                <!--Button to submit the form and send mail-->
+                <div class="col-sm-12 text-center" style="margin-top: 2%">
+                    <button type="submit" name="submitMail" class="btn btn-primary">Poslať maily</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-<!--END of File upload section MODIFIED BY STEFAN-->
+<?php
+echo "<div class='err-msg-cont'>" . $errormsg . "</div>";
+?>
+<!--END OF STEFAN'S HTML "PROGRAM CODE"-->
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
     <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
 </footer>
+<script src="getTemplateAjax.js"></script>
 </body>
 </html>
