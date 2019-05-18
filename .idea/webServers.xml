@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1b0108ce-e65a-4737-b886-5aa48eb8689b" name="webte" url="http://147.175.121.210">
+        <fileTransfer host="147.175.121.210" port="2117" rootFolder="/home/xrenczess/public_html" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="2117" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

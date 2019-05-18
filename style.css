@@ -1,0 +1,36 @@
+.navbar-custom .navbar-nav .nav-link {
+    color: white;
+}
+
+.navbar-custom .nav-item.active .nav-link,
+.navbar-custom .nav-item:hover .nav-link,
+.nav-icon:hover {
+    color: #ff2366;
+}
+
+.navbar-custom {
+    background-color: #1c2436;
+    font-weight: 500;
+}
+
+.nav-icon {
+    color: white;
+}
+
+.pd-top {
+    position: relative;
+    top: 10px;
+}
+
+.navbar-light .navbar-toggler-icon {
+    background-color: crimson;
+}
+
+.err-msg-cont {
+    width: fit-content;
+    margin: 5% auto;
+}
+
+.required-star {
+    color: red;
+}
