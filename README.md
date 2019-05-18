@@ -15,8 +15,8 @@
 ## Úloha č.2
 
 ## Úloha č.3
-- [ ] generovanie hesiel
-- [ ] načítanie ```csv``` súboru pomocou ```php```
+- [x] generovanie hesiel
+- [x] načítanie ```csv``` súboru pomocou ```php```
 - [ ] rozposlanie e-mailov
-- [ ] ukladanie udajov do databazy
-- [ ] formulár pre šablónu
+- [x] ukladanie udajov do databazy
+- [x] formulár pre šablónu
