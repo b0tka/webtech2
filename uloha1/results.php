@@ -12,7 +12,7 @@ if(isset($_POST['course_title']) and ($_POST['course_title'] != "")) {
             deleteCourse();
             break;
         case 'print_to_pdf':
-            printToPDF();
+            $pdf_result = printToPDF();
             break;
     }
 }
@@ -21,8 +21,7 @@ function showCourseResults() {
     $course_title = $_POST['course_title'];
     $course_year = $_POST['course_year'];
     $results = getCourseResults($course_title, $course_year);
-//    print_r($results);
-//    return buildHTMLtable($results);
+
     if($results) {
         return buildHTMLtable($results);
     } else {
@@ -44,7 +43,6 @@ function getCourseResults($course_title, $course_year) {
                                 WHERE data_column.course_id = 
                                     (SELECT id FROM course WHERE course.title = $course_title and course.year = $course_year)
                                 ORDER BY student.id, data_column.column_index ASC";
-
     return $db->GetAll($query_select_results);
 }
 
@@ -54,7 +52,7 @@ function deleteCourse() {
     $course_title = $db->qstr($_POST['course_title']);
     $course_year = $db->qstr($_POST['course_year']);
     $query_delete_course = "DELETE FROM course WHERE course.title = $course_title AND course.year = $course_year";
-    echo $query_delete_course;
+
     $db->Execute($query_delete_course) or die ("Chyba v query: $query_delete_course " . $db->ErrorMsg());
 }
 
@@ -69,12 +67,19 @@ function printToPDF() {
     $mpdf->useOnlyCoreFonts = true;
     $mpdf->SetDisplayMode('fullpage');
     $mpdf->WriteHTML($css,1);
-    $mpdf->WriteHTML(buildHTMLtable(getCourseResults($course_title, $course_year), 2));
+    $html = buildHTMLtable(getCourseResults($course_title, $course_year));
+    if($html == null) {
+        return "nophp";
+    }
+    $mpdf->WriteHTML($html, 2);
     $mpdf->Output('mpdf.pdf','I');
     exit;
 }
 
 function buildHTMLtable($data) {
+    if(sizeof($data) == 0) {
+        return null;
+    }
     $x = "";
     $x .= "<table  class=\"table table-hover\">";
 
@@ -167,9 +172,27 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <title>ADMIN</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="js/func.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
+    <script>
+        function drawCourses(value) {
+            $.ajax({
+                url: "actions.php",
+                type: "post",
+                data: { year: value },
+                success: function (response) {
+                    console.log("data from php: " + JSON.stringify(response));
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+
+        }
+    </script>
 </head>
 <body>
 <?php
@@ -224,7 +247,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                         <h3>Zobrazenie výsledkov všetkých študentov pre daný predmet</h3>
                         <div class="col-sm-6" style="margin: 3% auto;">
                             Vyber školský rok:
-                            <select name="course_year" class="custom-select">
+                            <select name="course_year" class="custom-select" onchange="drawCourses(this.value)">
                                 <?php echoOptions(fetchListFromDB('year')); ?>
                             </select>
                         </div>
@@ -238,13 +261,13 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     <!--Button to submit the form-->
                     <div class="row">
                         <div class="col-sm-3">
-                            <button name='submit' value='show' class="btn btn-primary">Zobraziť výsledky</button>
+                            <button name='submit' value='show' class="btn btn-info">Zobraziť výsledky</button>
                         </div>
                         <div class="col-sm-3">
-                            <button name='submit' value='delete' class="btn btn-primary" >Vymazať výsledky</button>
+                            <button name='submit' value='delete' class="btn btn-danger" >Vymazať výsledky</button>
                         </div>
                         <div class="col-sm-3">
-                            <button name='submit' value='print_to_pdf' class="btn btn-primary">Vytlačiť do PDF</button>
+                            <button name='submit' value='print_to_pdf' class="btn btn-outline-secondary">Vytlačiť do PDF</button>
                         </div>
                     </div>
                 </form>
@@ -254,8 +277,18 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
     </main>
 </div>
 <br><br>
-<?php echo $course_results;
-?>
+<div class="mb-5 container">
+    <?php
+    if(($course_results == "Predmet neexistuje!")) {
+        echo "<div class=\"alert alert-danger\" role=\"alert\">
+                <p class=\"mb-0\">Zvolili ste si zlú kombináciu, predmet neexistuje!</p>
+            </div>";
+    } else {
+        echo $course_results;
+    }
+
+    ?>
+</div>
 
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
     <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
@@ -274,6 +307,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="js/func.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -330,7 +364,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                         <h3>All students' results of the specified course</h3>
                         <div class="col-sm-6" style="margin: 3% auto;">
                             Choose year:
-                            <select name="course_year" class="custom-select">
+                            <select name="course_year" class="custom-select" onchange="drawCourses(this.value)">
                                 <?php echoOptions(fetchListFromDB('year')); ?>
                             </select>
                         </div>
@@ -344,13 +378,13 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     <!--Button to submit the form-->
                     <div class="row">
                         <div class="col-sm-3">
-                            <button name='submit' value='show' class="btn btn-primary">Show results</button>
+                            <button name='submit' value='show' class="btn btn-info">Show results</button>
                         </div>
                         <div class="col-sm-3">
-                            <button name='submit' value='delete' class="btn btn-primary" >Delete results</button>
+                            <button name='submit' value='delete' class="btn btn-danger" >Delete results</button>
                         </div>
                         <div class="col-sm-3">
-                            <button name='submit' value='print_to_pdf' class="btn btn-primary">Print to PDF</button>
+                            <button name='submit' value='print_to_pdf' class="btn btn-outline-secondary">Print to PDF</button>
                         </div>
                     </div>
                 </form>
@@ -360,12 +394,21 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
     </main>
 </div>
 <br><br>
-<?php echo $course_results;
+<div class="mb-5 container">
+<?php
+if($course_results == "Predmet neexistuje!") {
+    echo "<div class=\"alert alert-danger\" role=\"alert\">
+                <p class=\"mb-0\">No such course!</p>
+            </div>";
+} else {
+    echo $course_results;
+}
 ?>
-
+</div>
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
     <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
 </footer>
+
 
     <?php
 
