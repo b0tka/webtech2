@@ -25,12 +25,3 @@
 .navbar-light .navbar-toggler-icon {
     background-color: crimson;
 }
-
-.err-msg-cont {
-    width: fit-content;
-    margin: 5% auto;
-}
-
-.required-star {
-    color: red;
-}
