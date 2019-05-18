@@ -67,8 +67,10 @@ if (isset($_POST['submitMail'])) {
                         $valueOfFourthRow = $data[3];
                         $valueOfFifthRow = $data[4];
 
+                        echo  $valueOfFourthRow;
 
-                        // Load Composer's autoloader
+
+//                         Load Composer's autoloader
                         require 'vendor/autoload.php';
 
                         // Instantiation and passing `true` enables exceptions
@@ -84,7 +86,7 @@ if (isset($_POST['submitMail'])) {
                             $mail->Password = $passwd;                        // SMTP password
                             $mail->SMTPSecure = 'tls';                                  // Enable TLS encryption, `ssl` also accepted
                             $mail->Port = 587;                                    // TCP port to connect to
-                            $mail->Charset = 'utf-8';
+                            $mail->CharSet = 'UTF-8';
 
                             //Recipients
                             $mail->setFrom($email, $name);
@@ -108,7 +110,7 @@ if (isset($_POST['submitMail'])) {
                             $mail->send();
 
                             /*Upload history logs of sending email into mail_history table in projekt-uloha1 database*/
-                            $sql = "INSERT INTO mail_history (date, username, subject, template_id) 
+                            $sql = "INSERT INTO mail_history (date, username, subject, template_id)
                                         VALUES (now(), '$valueOfFourthRow', '$subject', '$template_id')";
                             if ($conn->query($sql)) {
                                 echo 'Message has been sent';
@@ -122,6 +124,7 @@ if (isset($_POST['submitMail'])) {
                     }
                     $index++;
                 }
+                unlink($csv_input);
                 fclose($handle);
             }
         }

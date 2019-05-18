@@ -1,9 +1,7 @@
 <?php
 /*-------START OF PHP CODE WRITTEN BY STEFAN--------*/
 /*Definition of inputs and external files*/
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 
 include_once("../config.php");
 
@@ -89,11 +87,13 @@ if (!empty($_POST) && !empty($_FILES)) {
                 $index++;
             }
             fclose($handle);
+            fclose($csv_output);
 
             /*Telling the browser that we want to download the file*/
             header('Content-Type: application/csv');
             header('Content-Disposition: attachment; filename="passwords.csv"');
             readfile("passwords.csv");
+            unlink("passwords.csv");
             exit;
         }
     }
@@ -154,7 +154,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="#">Slovenský</a>
                         <a class="dropdown-item" href="#">Anglický</a>
-                    </div> 
+                    </div>
                 </li>
             </ul>
             <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
@@ -210,12 +210,12 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
             <!--DIV container for the 'file selection' input and template selection-->
             <div class="row">
                 <!--File browser for uploading from PC-->
-                <div class="col-sm-4" style="margin: 3% auto;">
+                <div class="input-group col-sm-6" style="margin: 3% auto;">
                     <input type="file" class="custom-file-input" id="customFileMail" required name="mail-file">
                     <label class="custom-file-label" for="customFileMail">Vyber súbor</label>
                 </div>
                 <!--Selection for separator by which final csv can be separated and parsed-->
-                <div class="input-group col-sm-4" style="margin: 3% auto;">
+                <div class="input-group col-sm-6" style="margin: 3% auto;">
                     <select class="custom-select" required id="inputGroupSelect03" name="delimiter-mail">
                         <option value="none" selected>Vyber...</option>
                         <option value=";">;</option>
@@ -225,34 +225,13 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                         <label class="input-group-text btn-outline-danger" for="inputGroupSelect03">Oddeľovač</label>
                     </div>
                 </div>
-                <!--Selection for mail template that is saved in database-->
-                <div class="input-group col-sm-4" style="margin: 3% auto;">
-                    <select class="custom-select" required id="templateSelection" name="templateSelection">
-                        <option value="none" selected>Vyber...</option>
-                        <?php
-                        /*This section provides dynamic generation of options for mail templates.
-                        This script selects all the templates from database and inserts their name
-                        to template selection as possible options.*/
-                        $sqlTemplatesName = "SELECT * FROM template t";
-                        $resultTemplateName = $conn->query($sqlTemplatesName);
-                        if ($resultTemplateName->num_rows > 0) {
-                            while($row = $resultTemplateName->fetch_assoc()) {
-                                echo " <option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
-                                $niec = $row["content"];
-                            }
-                        }
-                        ?>
-                    </select>
-                    <div class="input-group-append">
-                        <label class="input-group-text btn-outline-danger" for="templateSelection">Šablóna</label>
-                    </div>
-                </div>
             </div>
             <div class="justify-content-center">
                 <h4 class="mb-4 mt-3">Údaje o odosieľateľovi</h4>
                 <!--Admin fills in his/her email-->
                 <div class="form-group col-sm-12 row justify-content-center">
-                    <label for="email" class="col-sm-2 col-form-label">Email<span class="required-star"> *</span></label>
+                    <label for="email" class="col-sm-2 col-form-label">Email<span
+                                class="required-star"> *</span></label>
                     <div class="col-sm-10">
                         <input type="text" name="email" required class="form-control" id="email"
                                placeholder="email@example.com">
@@ -268,7 +247,8 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                 </div>
                 <!--Admin types his/her password to be able send mail using SMTP stuba.sk-->
                 <div class="form-group row col-sm-12 justify-content-center">
-                    <label for="password" class="col-sm-2 col-form-label">Heslo<span class="required-star"> *</span></label>
+                    <label for="password" class="col-sm-2 col-form-label">Heslo<span
+                                class="required-star"> *</span></label>
                     <div class="col-sm-10">
                         <input type="password" name="password" required class="form-control" id="password"
                                placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;">
@@ -276,30 +256,60 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                 </div>
                 <!--Admin fills in the subject of the mail-->
                 <div class="form-group row col-sm-12 justify-content-center">
-                    <label for="subjectMail" class="col-sm-2 col-form-label">Predmet<span class="required-star"> *</span></label>
+                    <label for="subjectMail" class="col-sm-2 col-form-label">Predmet<span
+                                class="required-star"> *</span></label>
                     <div class="col-sm-10">
                         <input type="text" name="subjectMail" required class="form-control" id="subjectMail"
                                placeholder="Zadaj predmet mailu">
                     </div>
                 </div>
-                <!--Admin can add attachments-->
-                <div class="form-group row col-sm-12 justify-content-center">
-                    <label for="mailAttachment" class="col-sm-2 col-form-label">Príloha</label>
-                    <div class="col-sm-10">
-                        <input type="file" name="mailAttachment" id="mailAttachment">
+
+                <div class="row col-sm-12 justify-content-center">
+                    <!--Admin can add attachments-->
+                    <div class="input-group col-sm-6" style="margin: 3% auto;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="mailAttachmentDesc">Príloha</span>
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="mailAttachment"
+                                   aria-describedby="mailAttachmentDesc" name="mailAttachment">
+                            <label class="custom-file-label" for="mailAttachment">Vyber súbor</label>
+                        </div>
+                    </div>
+                    <!--Selection for mail template that is saved in database-->
+                    <div class="input-group col-sm-6" style="margin: 3% auto;">
+                        <select class="custom-select" required id="templateSelection" name="templateSelection">
+                            <option value="none" selected>Vyber...</option>
+                            <?php
+                            /*This section provides dynamic generation of options for mail templates.
+                            This script selects all the templates from database and inserts their name
+                            to template selection as possible options.*/
+                            $sqlTemplatesName = "SELECT * FROM template t";
+                            $resultTemplateName = $conn->query($sqlTemplatesName);
+                            if ($resultTemplateName->num_rows > 0) {
+                                while ($row = $resultTemplateName->fetch_assoc()) {
+                                    echo " <option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+                                    $niec = $row["content"];
+                                }
+                            }
+                            ?>
+                        </select>
+                        <div class="input-group-append">
+                            <label class="input-group-text btn-outline-danger" for="templateSelection">Šablóna</label>
+                        </div>
                     </div>
                 </div>
                 <!--TextArea with CKEditor what is used for editing the inserted template-->
                 <div class="col-sm-12 row justify-content-center" style="margin-top: 3%">
                     <div class="col-sm-1"></div>
-                <div class="form-group col-sm-10 purple-border">
-                    <textarea class="form-control" id="mailBodyTextArea" rows="60"></textarea>
-                    <script>
-                         /*Replace the <textarea id="editor1"> with a CKEditor
-                         instance, using default configuration.*/
-                        CKEDITOR.replace( 'mailBodyTextArea' );
-                    </script>
-                </div>
+                    <div class="form-group col-sm-10">
+                        <textarea class="form-control" id="mailBodyTextArea" rows="60"></textarea>
+                        <script>
+                            /*Replace the <textarea id="editor1"> with a CKEditor
+                            instance, using default configuration.*/
+                            CKEDITOR.replace('mailBodyTextArea');
+                        </script>
+                    </div>
                     <div class="col-sm-1"></div>
                 </div>
                 <!--Button to submit the form and send mail-->
