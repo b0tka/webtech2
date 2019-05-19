@@ -1,0 +1,95 @@
+.navbar-custom .navbar-nav .nav-link {
+    color: white;
+}
+
+.navbar-custom .nav-item.active .nav-link,
+.navbar-custom .nav-item:hover .nav-link,
+.nav-icon:hover {
+    color: #ff2366;
+}
+
+.navbar-custom {
+    background-color: #1c2436;
+    font-weight: 500;
+}
+
+.nav-icon {
+    color: white;
+}
+
+.pd-top {
+    position: relative;
+    top: 10px;
+}
+
+.navbar-light .navbar-toggler-icon {
+    background-color: crimson;
+}
+
+.err-msg-cont {
+    width: fit-content;
+    margin: 5% auto;
+}
+
+h1, h2, h3 {
+    margin-bottom: 1rem !important;
+    margin-top: 2rem !important;
+    color: #4d5053;
+}
+
+h1 {
+    padding-bottom: 0.4rem;
+    border-bottom: 1px #ff2366 solid;
+
+
+}
+
+h2.index-subtitle {
+    border-bottom: 1px #ff2366 solid;
+    padding: 1px;
+
+}
+
+header {
+    box-shadow: 0 3px 6px #707275, 0 3px 6px
+}
+
+body {
+    padding-bottom: 70px;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: #4d5053 !important;
+}
+
+.btn-primary:hover, .btn-primary:active {
+    color: #ff2366;
+}
+
+.btn-primary:focus {
+    border-color: #ff2366 !important;
+
+}
+
+i.agree-with-points, i.disagree-with-points {
+    color: #4d5053;
+}
+
+i.agree-with-points:hover, i.disagree-with-points:hover {
+    color: #ff2366;
+    cursor: pointer;
+}
+
+.student-login-button {
+    margin-top: 0.7rem!important;
+}
+
+#chartContainer,#teamChartContainer {
+    margin-bottom: 3rem;
+    border-bottom: 2px #ff2366 solid;
+
+
+}
+
+
+
