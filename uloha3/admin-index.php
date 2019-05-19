@@ -118,7 +118,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Framework</title>
+    <title>Úloha 3</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -150,7 +150,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="../general.admin/login.php">Úloha 1</a>
+                    <a class="nav-link" href="../uloha1/admin-index.php">Úloha 1</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha2/admin-index.php">Úloha 2</a>
@@ -331,6 +331,24 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
             </div>
         </form>
     </div>
+    <div class="container-fluid" style="margin-top: 3%">
+        <h3>História odosielaní</h3>
+        <div class="row col-sm-12 justify-content-center" style="margin-top: 3%">
+        <?php
+        $sql_mail_history = "SELECT * FROM mail_history";
+        $result_mail_history = $conn->query($sql_mail_history);
+        echo "<table class='table table-striped'><thead class='thead-light'><th scope='col'>Čas</th><th scope='col'>Príjemca</th>
+                <th scope='col'>Predmet</th><th scope='col'>ID šablóny</th></thead><tbody>";
+        if($result_mail_history->num_rows > 0){
+            while($row = $result_mail_history->fetch_assoc()){
+                echo "<tr scope='row'><td>".$row["date"]."</td><td>".$row["username"]."</td><td>".
+                    $row["subject"]."</td><td>".$row["template_id"]."</td></tr>";
+            }
+        }
+        echo "</tbody></table>";
+        ?>
+        </div>
+    </div>
 </div>
 <?php
 echo "<div class='err-msg-cont'>" . $errormsg . "</div>";
@@ -351,7 +369,7 @@ echo "<div class='err-msg-cont'>" . $errormsg . "</div>";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Framework</title>
+    <title>Task 3</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -383,7 +401,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="../general.admin/login.php">Task 1</a>
+                    <a class="nav-link" href="../uloha1/admin-index.php">Task 1</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha2/admin-index.php">Task 2</a>
@@ -563,6 +581,24 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                 </div>
             </div>
         </form>
+    </div>
+    <div class="container-fluid" style="margin-top: 3%">
+        <h3>Email history</h3>
+        <div class="row col-sm-12 justify-content-center" style="margin-top: 3%">
+            <?php
+            $sql_mail_history = "SELECT * FROM mail_history";
+            $result_mail_history = $conn->query($sql_mail_history);
+            echo "<table class='table table-striped'><thead class='thead-light'><th scope='col'>Time</th><th scope='col'>To</th>
+                <th scope='col'>Subject</th><th scope='col'>Template ID</th></thead><tbody>";
+            if($result_mail_history->num_rows > 0){
+                while($row = $result_mail_history->fetch_assoc()){
+                    echo "<tr scope='row'><td>".$row["date"]."</td><td>".$row["username"]."</td><td>".
+                        $row["subject"]."</td><td>".$row["template_id"]."</td></tr>";
+                }
+            }
+            echo "</tbody></table>";
+            ?>
+        </div>
     </div>
 </div>
 <?php
