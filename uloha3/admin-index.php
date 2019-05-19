@@ -129,6 +129,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="ckeditor/ckeditor.js" charset="utf-8"></script>
+    <script src="sort.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -156,7 +157,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                     <a class="nav-link" href="../uloha2/admin-index.php">Úloha 2</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../uloha3/admin-index.php">Úloha 3</a>
+                    <a class="nav-link" href="admin-index.php">Úloha 3</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -337,8 +338,9 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
         <?php
         $sql_mail_history = "SELECT * FROM mail_history";
         $result_mail_history = $conn->query($sql_mail_history);
-        echo "<table class='table table-striped'><thead class='thead-light'><th scope='col'>Čas</th><th scope='col'>Príjemca</th>
-                <th scope='col'>Predmet</th><th scope='col'>ID šablóny</th></thead><tbody>";
+        echo "<table id='historyTable' class='table table-striped'><thead class='thead-light'><th scope='col' onclick='sortTable(0)'>
+                Čas</th><th scope='col' onclick='sortTable(1)'>Príjemca</th><th scope='col' onclick='sortTable(2)'>
+                Predmet</th><th scope='col' onclick='sortTable(3)'>ID šablóny</th></thead><tbody>";
         if($result_mail_history->num_rows > 0){
             while($row = $result_mail_history->fetch_assoc()){
                 echo "<tr scope='row'><td>".$row["date"]."</td><td>".$row["username"]."</td><td>".
@@ -380,6 +382,7 @@ echo "<div class='err-msg-cont'>" . $errormsg . "</div>";
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="ckeditor/ckeditor.js" charset="utf-8"></script>
+    <script src="sort.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -407,7 +410,7 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
                     <a class="nav-link" href="../uloha2/admin-index.php">Task 2</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../uloha3/admin-index.php">Task 3</a>
+                    <a class="nav-link" href="admin-index.php">Task 3</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -588,8 +591,9 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
             <?php
             $sql_mail_history = "SELECT * FROM mail_history";
             $result_mail_history = $conn->query($sql_mail_history);
-            echo "<table class='table table-striped'><thead class='thead-light'><th scope='col'>Time</th><th scope='col'>To</th>
-                <th scope='col'>Subject</th><th scope='col'>Template ID</th></thead><tbody>";
+            echo "<table id='historyTable' class='table table-striped'><thead class='thead-light'><th scope='col' onclick='sortTable(0)'>
+                Time</th><th scope='col' onclick='sortTable(1)'>To</th><th scope='col' onclick='sortTable(2)'>
+                Subject</th><th scope='col' onclick='sortTable(3)'>Template ID</th></thead><tbody>";
             if($result_mail_history->num_rows > 0){
                 while($row = $result_mail_history->fetch_assoc()){
                     echo "<tr scope='row'><td>".$row["date"]."</td><td>".$row["username"]."</td><td>".
