@@ -53,18 +53,17 @@ function echoCourseTable($data) {
     }
     $course_title =  $text_prefix . $row['course_title'] . " " . $row['course_year'];
 
-    echo "<h2>" . $course_title . "</h2><br>";
+    echo "<h3>" . $course_title . "</h3><br>";
     echo $student_full_name;
-    echo "<table class=\"table table-hover\">";
-    echo "<tr>";
+    echo "<table class=\"table table-hover table-sm table-condensed-u1c \"><thead>";
     foreach($data as $e) {
-        echo "<th  scope=\"col\">" . $e['column_title'] . "</th>";
+        echo "<th scope=\"col\">" . $e['column_title'] . "</th>";
     }
-    echo "</tr>";
+    echo "</thead><tbody id='tbody'><tr scope='row'>";
     foreach($data as $e) {
         echo "<td>" . $e['column_data'] . "</td>";
     }
-    echo "</table>";
+    echo "</tr></tbody></table><br><br><br>";
 }
 
 function initDBConnection() {
@@ -101,7 +100,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 <header>
@@ -176,7 +175,8 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
+
 </head>
 <body>
 <header>

@@ -34,3 +34,19 @@
 .required-star {
     color: red;
 }
+
+body {
+    padding-bottom: 70px;
+}
+
+header {
+    box-shadow: 0 3px 6px #707275, 0 3px 6px
+}
+
+.table-condensed-u1{
+    font-size: 10px;
+}
+
+.table-condensed-u1c{
+    font-size: 11px;
+}

@@ -4,8 +4,6 @@ if (!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin') {
     header("Location:http://147.175.121.210:8117/webte2/general.admin/login.php");
 }
 
-
-
 if((!empty($_FILES)) && (isset($_POST['course_title'])) && ($_POST['course_title'] != "")) {
 
     if(($csv_file = validateAndUploadCSVFile($_FILES['csv_file'])) !== FALSE) {
@@ -227,7 +225,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
         <div class="container mt-5">
             <div class="container-fluid mt-5">
                 <h3>Upload CSV súboru s výsledkami</h3>
-                <form action="admin-index.php" method="post" enctype="multipart/form-data">
+                <form action="admin-index.php?msg=success" method="post" enctype="multipart/form-data">
 
                 <div class="row">
                     <div class="col-sm-6" style="margin: 3% auto;">
@@ -251,9 +249,17 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                 </div>
                 <div class="row">
                     <div class="col-sm-6" style="margin: 3% auto;">
-                        <input type="file" class="custom-file-input" id="customFile" name="csv_file" required>
+                        <input type="file" class="custom-file-input" id="customFile" name="csv_file" required >
                         <label class="custom-file-label" for="customFile">Vyber CSV súbor s výsledkami</label>
                     </div>
+                    <script>
+                        $('#customFile').on('change',function(){
+                            //get the file name
+                            var fileName = $(this).val();
+                            //replace the "Choose a file" label
+                            $(this).next('.custom-file-label').html(fileName);
+                        })
+                    </script>
                     <div class="input-group col-sm-6" style="margin: 3% auto;">
                         <select class="custom-select" id="inputGroupSelect02" name="delimiter">
                             <option value="semicolon">;</option>
@@ -265,25 +271,27 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     </div>
                 </div>
                     <div class="col-sm-12 text-center">
-                        <button type="submit" name="submit" class="btn btn-primary">Nahraj CSV a vytvor predmet</button>
+                        <button type="submit" name="submit" class="btn btn-primary" id="submitButton">Nahraj CSV a vytvor predmet</button>
                     </div>
                 </form>
                 <div id="successMsg">
-
                 </div>
             </div>
         </div>
     </main>
 </div>
-
+<script>
+    if (location.search.indexOf('msg=')>=0) {
+        var div = document.getElementById('successMsg');
+        div.innerHTML += "<div class=\"alert alert-success\" role=\"alert\">\n" +
+            "                    <p class=\"mb-0\">Pridanie CSV súboru prebehlo úspešne.</p>\n" +
+            "                </div>";
+    }
+</script>
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
     <span class="text-white pd-top">Vývojári : LR, DV, MM, SR, MR</span>
 </footer>
-<script>
-    $("#successMsg").submit({
-        this.innerHTML = 'Pridanie predmetu bolo úspešné.';
-    })
-</script>
+
 <?php
 } elseif($_COOKIE['lang'] == 'en') {
 ?>
@@ -350,7 +358,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
             <div class="container mt-3">
                 <div class="container-fluid">
                     <h3>Upload CSV results file</h3>
-                    <form action="admin-index.php" method="post" enctype="multipart/form-data">
+                    <form action="admin-index.php?msg=success" method="post" enctype="multipart/form-data">
 
                         <div class="row">
                             <div class="col-sm-6" style="margin: 3% auto;">
@@ -377,6 +385,14 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                                 <input type="file" class="custom-file-input" required id="customFile" name="csv_file">
                                 <label class="custom-file-label" for="customFile">Choose CSV file:</label>
                             </div>
+                            <script>
+                                $('#customFile').on('change',function(){
+                                    //get the file name
+                                    var fileName = $(this).val();
+                                    //replace the "Choose a file" label
+                                    $(this).next('.custom-file-label').html(fileName);
+                                })
+                            </script>
                             <div class="input-group col-sm-6" style="margin: 3% auto;">
                                 <select class="custom-select" id="inputGroupSelect02" name="delimiter">
                                     <option value="semicolon">;</option>
@@ -391,11 +407,20 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                             <button type="submit" name="submit" class="btn btn-primary">Upload CSV and create course</button>
                         </div>
                     </form>
+                    <div id="successMsg">
+                    </div>
                 </div>
             </div>
         </main>
     </div>
-
+    <script>
+        if (location.search.indexOf('msg=')>=0) {
+            var div = document.getElementById('successMsg');
+            div.innerHTML += "<div class=\"alert alert-success\" role=\"alert\">\n" +
+                "                    <p class=\"mb-0\">CSV file succesfully uploaded.</p>\n" +
+                "                </div>";
+        }
+    </script>
     <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
         <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
     </footer>

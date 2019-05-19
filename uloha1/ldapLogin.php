@@ -39,7 +39,7 @@ if (isset($_POST)) {
 
         $query_select_student = "SELECT id FROM student WHERE id = $usrId";
 
-        $result_select_student = $db->GetRow($query_select_student) or die ("Chyba v query: $query_select_student " . $db->ErrorMsg());
+        $result_select_student = $db->GetRow($query_select_student);// or die ("Chyba v query: $query_select_student " . $db->ErrorMsg());
 
 
         if($result_select_student) {

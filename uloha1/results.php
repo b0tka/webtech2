@@ -63,15 +63,30 @@ function printToPDF() {
     $course_year = $_POST['course_year'];
 
     $mpdf=new mPDF('c','A4-L','','',32,25,27,25,16,13);
-    $css = "table { border: 2px solid black; border-collapse: collapse; } td, th { padding: 4px; border: 1px solid black; text-align: center; }";
-    $mpdf->useOnlyCoreFonts = true;
+
+
+    $css = "table {  border: 2px solid black; border-collapse: collapse; } td, th { font-family: freeserif; padding: 4px; border: 1px solid black; text-align: center; }";
     $mpdf->SetDisplayMode('fullpage');
     $mpdf->WriteHTML($css,1);
+    $nadpis = "<h3>Výsledky z predmetu $course_title - $course_year</h3>";
+
+
     $html = buildHTMLtable(getCourseResults($course_title, $course_year));
+    $html = str_replace("č", "c" ,$html);
+    $html = str_replace("ľ", "l" ,$html);
+    $html = str_replace("ť", "t" ,$html);
+    $html = str_replace("ď", "d" ,$html);
+    $html = str_replace("ň", "n" ,$html);
+    $html = str_replace("ô", "o" ,$html);
+    $html = str_replace("ä", "a" ,$html);
     if($html == null) {
         return "nophp";
     }
+
+//
+    $mpdf->WriteHTML($nadpis,2);
     $mpdf->WriteHTML($html, 2);
+
     $mpdf->Output('mpdf.pdf','I');
     exit;
 }
@@ -81,19 +96,19 @@ function buildHTMLtable($data) {
         return null;
     }
     $x = "";
-    $x .= "<table  class=\"table table-hover\">";
+    $x .= "<table class=\"table table-hover table-sm table-condensed-u1 \"><thead><tr>";
 
     // echo table headers
     $index = 0;
-    $x .= "<tr>";
-    $x .= "<th  scope=\"col\">" . "ID študenta" . "</th><th>" . "Meno a priezvisko" . "</th>";
+//    $x .= "<tr>";
+    $x .= "<th scope=\"col\">" . "ID študenta" . "</th><th scope='col'>" . "Meno a priezvisko" . "</th>";
 
     do {
-        $x .= "<th>" . $data[$index]['column_title'] . "</th>";
+        $x .= "<th scope='col'>" . $data[$index]['column_title'] . "</th>";
         $index++;
     } while($data[$index]['column_index'] != '0');
 
-    $x .= "</tr>";
+    $x .= "</tr></thead><tbody id='tbody'>";
 
     //echo table content
     $data_block_length = $index;
@@ -103,7 +118,7 @@ function buildHTMLtable($data) {
 //    prettyPrintArray($data_blocks);
 
     foreach($data_blocks as $student_data) {
-        $x .= "<tr>";
+        $x .= "<tr scope='row'>";
         $x .= "<td>" . $student_data[0]['id'] . "</td>";
         $x .= "<td>" . $student_data[0]['student_name'] . " " . $student_data[0]['student_surname'] . "</td>";
         foreach ($student_data as $item) {
@@ -112,7 +127,7 @@ function buildHTMLtable($data) {
         $x .= "</tr>";
     }
 
-    $x .= "</table>";
+    $x .= "</tbody></table>";
 
     return $x;
 }
@@ -248,12 +263,8 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
         </div>
     </nav>
 </header>
-
-<div class="container-fluid root-container mt-3">
-    <main>
-        <div class="container mt-5 px-5">
-            <div class="container-fluid">
-
+<div class="container">
+            <div class="container-fluid mt-5">
                 <form action="results.php" method="post" ><br>
                     <div class="row">
                         <h3>Zobrazenie výsledkov všetkých študentov pre daný predmet</h3>
@@ -271,7 +282,6 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                             </select>
                         </div>
                     </div>
-                    <!--Button to submit the form-->
                     <div class="row">
                         <div class="col-sm-3">
                             <button name='submit' value='show' class="btn btn-info">Zobraziť výsledky</button>
@@ -286,21 +296,23 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                 </form>
             </div>
 
-        </div>
-    </main>
-</div>
-<br><br>
-<div class="mb-5 container">
-    <?php
-    if(($course_results == "Predmet neexistuje!")) {
-        echo "<div class=\"alert alert-danger\" role=\"alert\">
-                <p class=\"mb-0\">Zvolili ste si zlú kombináciu, predmet neexistuje!</p>
-            </div>";
-    } else {
-        echo $course_results;
-    }
 
-    ?>
+
+
+            <div class="container-fluid mt-5">
+                <h3 id="toggleLogs">Výsledky</h3>
+
+            <?php
+            if(($course_results == "Predmet neexistuje!")) {
+                echo "<div class=\"alert alert-danger\" role=\"alert\">
+                        <p class=\"mb-0\">Zvolili ste si zlú kombináciu, predmet neexistuje!</p>
+                    </div>";
+            } else {
+                echo $course_results;
+            }
+
+            ?>
+        </div>
 </div>
 
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
@@ -395,13 +407,10 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
         </div>
     </nav>
 </header>
-
-<div class="container-fluid root-container mt-3">
-    <main>
-        <div class="container mt-5 px-5">
-            <div class="container-fluid">
-
+<div class="container">
+    <div class="container-fluid mt-5">
                 <form action="results.php" method="post" ><br>
+                    <div class="container">
                     <div class="row">
                         <h3>All students' results of the specified course</h3>
                         <div class="col-sm-6" style="margin: 3% auto;">
@@ -418,7 +427,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                             </select>
                         </div>
                     </div>
-                    <!--Button to submit the form-->
+                    </div>
                     <div class="row">
                         <div class="col-sm-3">
                             <button name='submit' value='show' class="btn btn-info">Show results</button>
@@ -431,22 +440,20 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                         </div>
                     </div>
                 </form>
-            </div>
+    </div>
 
-        </div>
-    </main>
-</div>
-<br><br>
-<div class="mb-5 container">
-<?php
-if($course_results == "Predmet neexistuje!") {
-    echo "<div class=\"alert alert-danger\" role=\"alert\">
-                <p class=\"mb-0\">No such course!</p>
-            </div>";
-} else {
-    echo $course_results;
-}
-?>
+    <div class="container-fluid mt-5">
+        <h3 id="toggleLogs">Results</h3>
+    <?php
+    if($course_results == "Predmet neexistuje!") {
+        echo "<div class=\"alert alert-danger\" role=\"alert\">
+                    <p class=\"mb-0\">No such course!</p>
+                </div>";
+    } else {
+        echo $course_results;
+    }
+    ?>
+    </div>
 </div>
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
     <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
