@@ -88,11 +88,11 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
             <form action="ldapLogin.php" method="post">
                 <div class="form-group">
                     <label for="login">Meno</label>
-                    <input name="login" class="form-control" id="login" placeholder="Enter login">
+                    <input name="login" class="form-control" id="login" placeholder="Zadaj meno">
                 </div>
                 <div class="form-group">
                     <label for="password">Heslo</label>
-                    <input name="password" type="password" class="form-control" id="password" placeholder="Password">
+                    <input name="password" type="password" class="form-control" id="password" placeholder="Zadaj heslo">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Prihlásiť</button>

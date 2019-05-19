@@ -231,7 +231,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
 <header>
     <nav class="navbar navbar-light navbar-custom navbar-expand-lg">
         <a class="navbar-brand" href="./index.php">
-            <img src="admin.png" width="100" height="55" alt="admin">
+            <img src="../general.admin/admin.png" width="100" height="55" alt="admin">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -375,7 +375,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
 <header>
     <nav class="navbar navbar-light navbar-custom navbar-expand-lg">
         <a class="navbar-brand" href="./index.php">
-            <img src="admin.png" width="100" height="55" alt="admin">
+            <img src="../general.admin/admin.png" width="100" height="55" alt="admin">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
