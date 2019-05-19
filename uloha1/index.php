@@ -19,7 +19,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Framework</title>
+    <title>Úloha 1</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -64,9 +64,9 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
                 </li>
             </ul>
             <span class="navbar-text text-right text-white">
-                        Username : <?php echo $_SESSION['uloha1_username']; ?>
+<!--                        Používateľ : --><?php //echo $_SESSION['uloha1_username']; ?>
                 </span>
-            <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
+<!--            <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>-->
         </div>
     </nav>
 </header>
@@ -75,31 +75,31 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <main>
         <div class="container mt-5 px-5">
             <!--        core website-->
-            <h2>Login as student</h2>
+            <h2>Prihlásiť sa ako študent</h2>
             <?php
             if (isset($_GET) && ($_GET['error'] === "invalid-user")) {
                 ?>
                 <div class="alert alert-danger">
-                    <strong>Login has been refused!</strong> Bad login or password.
+                    <strong>Prihlásenie nebolo úspešné!</strong> Nesprávne používateľské meno alebo heslo.
                 </div>
                 <?php
             }
             ?>
             <form action="ldapLogin.php" method="post">
                 <div class="form-group">
-                    <label for="login">Name</label>
+                    <label for="login">Meno</label>
                     <input name="login" class="form-control" id="login" placeholder="Enter login">
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">Heslo</label>
                     <input name="password" type="password" class="form-control" id="password" placeholder="Password">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Prihlásiť</button>
             </form>
-            <h2>Login as administrator</h2>
+            <h2>Prihlásiť ako administrátor</h2>
             <form action="../general.admin/login.php">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Prihlásiť</button>
 
             </form>
         </div>
@@ -107,7 +107,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
 </div>
 
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
-    <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
+    <span class="text-white pd-top">Vývojári : LR, DV, MM, SR, MR</span>
 </footer>
 <?php
 } elseif($_COOKIE['lang'] == 'en') {
@@ -118,7 +118,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Framework</title>
+    <title>Task 1</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -163,9 +163,9 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
                 </li>
             </ul>
             <span class="navbar-text text-right text-white">
-                        Username : <?php echo $_SESSION['uloha1_username']; ?>
+<!--                        Username : --><?php //echo $_SESSION['uloha1_username']; ?>
                 </span>
-            <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
+<!--            <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>-->
         </div>
     </nav>
 </header>

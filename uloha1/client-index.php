@@ -46,7 +46,12 @@ function echoCourseTable($data) {
     $row = $data[0];
 
     $student_full_name = $row['student_name'] . " " . $row['student_surname'];
-    $course_title =  "Výsledky z predmetu " . $row['course_title'] . " " . $row['course_year'];
+    if($_COOKIE['lang'] == 'en') {
+        $text_prefix  = "Course results for ";
+    } else {
+        $text_prefix = "Výsledky z predmetu ";
+    }
+    $course_title =  $text_prefix . $row['course_title'] . " " . $row['course_year'];
 
     echo "<h2>" . $course_title . "</h2><br>";
     echo $student_full_name;
@@ -91,7 +96,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Framework</title>
+    <title>Úloha 1</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -101,7 +106,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
 <body>
 <header>
     <nav class="navbar navbar-light navbar-custom navbar-expand-lg">
-        <a class="navbar-brand" href="./index.php">
+        <a class="navbar-brand" href="../index.php">
             <i class="material-icons nav-icon pt-2">home</i>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,7 +135,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
                 </li>
             </ul>
             <span class="navbar-text text-right text-white">
-                        Username : <?php echo $_SESSION['uloha1_username']; ?>
+                        Používateľ : <?php echo $_SESSION['uloha1_username']; ?>
                 </span>
             <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
         </div>
@@ -153,7 +158,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
 </div>
 
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
-    <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
+    <span class="text-white pd-top">Vývojári : LR, DV, MM, SR, MR</span>
 </footer>
 
 <?php
@@ -166,7 +171,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Framework</title>
+    <title>Task 1</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -185,13 +190,13 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="../uloha1/index.php">Úloha 1</a>
+                    <a class="nav-link" href="../uloha1/index.php">Task 1</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../uloha2/index.php">Úloha 2</a>
+                    <a class="nav-link" href="../uloha2/index.php">Task 2</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="../uloha3/admin-index.php">Úloha 3</a>
+                    <a class="nav-link" href="../uloha3/admin-index.php">Task 3</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"

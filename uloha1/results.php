@@ -169,12 +169,11 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ADMIN</title>
+    <title>Admin</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="js/func.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
     <script>
@@ -185,12 +184,25 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
                 data: { year: value },
                 success: function (response) {
                     console.log("data from php: " + JSON.stringify(response));
+                    addOptions(response);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
                 }
             });
 
+        }
+
+        function addOptions(optionsJSON) {
+            var selectElement = document.getElementById("optionsFromAjax");
+            $("#optionsFromAjax").empty();
+
+            var json = JSON.parse(optionsJSON);
+            for(var k in json) {
+                var opt = document.createElement("option");
+                opt.text = json[k]['title'];
+                selectElement.options.add(opt);
+            }
         }
     </script>
 </head>
@@ -231,7 +243,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     </div>
                 </li>
             </ul>
-            <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
+            <span class="navbar-text text-right text-white">Používateľ : admin &nbsp;</span>
             <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
         </div>
     </nav>
@@ -248,13 +260,14 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                         <div class="col-sm-6" style="margin: 3% auto;">
                             Vyber školský rok:
                             <select name="course_year" class="custom-select" onchange="drawCourses(this.value)">
+                                <option value=""></option>
                                 <?php echoOptions(fetchListFromDB('year')); ?>
                             </select>
                         </div>
                         <div class="col-sm-6" style="margin: 3% auto;">
                             Zadaj názov predmetu:
-                            <select name="course_title" class="custom-select">
-                                <?php echoOptions(fetchListFromDB('title')); ?>
+                            <select name="course_title" id="optionsFromAjax" class="custom-select">
+
                             </select>
                         </div>
                     </div>
@@ -291,7 +304,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
 </div>
 
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
-    <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
+    <span class="text-white pd-top">Vývojári : LR, DV, MM, SR, MR</span>
 </footer>
 
 <?php
@@ -303,13 +316,42 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ADMIN</title>
+    <title>Admin</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="js/func.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
+    <script>
+        function drawCourses(value) {
+            $.ajax({
+                url: "actions.php",
+                type: "post",
+                data: { year: value },
+                success: function (response) {
+                    console.log("data from php: " + JSON.stringify(response));
+                    addOptions(response);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+
+        }
+
+        function addOptions(optionsJSON) {
+            var selectElement = document.getElementById("optionsFromAjax");
+            $("#optionsFromAjax").empty();
+
+            var json = JSON.parse(optionsJSON);
+            for(var k in json) {
+                var opt = document.createElement("option");
+                opt.text = json[k]['title'];
+                selectElement.options.add(opt);
+            }
+        }
+    </script>
 </head>
 <body>
 <?php
@@ -365,13 +407,14 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                         <div class="col-sm-6" style="margin: 3% auto;">
                             Choose year:
                             <select name="course_year" class="custom-select" onchange="drawCourses(this.value)">
+                                <option value=""></option>
                                 <?php echoOptions(fetchListFromDB('year')); ?>
                             </select>
                         </div>
                         <div class="col-sm-6" style="margin: 3% auto;">
                             Choose course title:
-                            <select name="course_title" class="custom-select">
-                                <?php echoOptions(fetchListFromDB('title')); ?>
+                            <select name="course_title" id="optionsFromAjax" class="custom-select">
+
                             </select>
                         </div>
                     </div>

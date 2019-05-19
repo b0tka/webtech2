@@ -170,7 +170,7 @@ if(($_COOKIE['lang'] == 'sk') or (!isset($_COOKIE['lang']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ADMIN</title>
+    <title>Admin Úloha 1</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -186,8 +186,8 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
 ?>
 <header>
     <nav class="navbar navbar-light navbar-custom navbar-expand-lg">
-        <a class="navbar-brand" href="./index.php">
-            <img src="admin.png" width="100" height="55" alt="admin">
+        <a class="navbar-brand" href="../general.admin/index.php">
+            <img src="../general.admin/admin.png" width="100" height="55" alt="admin">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -195,13 +195,16 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="../uloha1/admin-index.php">Úloha 1</a>
+                    <a class="nav-link" href="admin-index.php">Úloha 1</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha2/admin-index.php">Úloha 2</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../uloha3/admin-index.php">Úloha 3</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="results.php">Manipulácia výsledkov</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -214,18 +217,15 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     </div>
                 </li>
             </ul>
-            <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
-            <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
+            <span class="navbar-text text-right text-white">Používateľ : admin &nbsp;</span>
+            <a href="../general.admin/logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
         </div>
     </nav>
 </header>
-<div>
-    <div class="col-sm-12 text-center">
-        <a class="btn btn-primary" href="results.php">Prejsť na manipuláciu s výsledkami</a>
-    </div>
+<div class="container">
     <main>
-        <div class="container mt-3">
-            <div class="container-fluid">
+        <div class="container mt-5">
+            <div class="container-fluid mt-5">
                 <h3>Upload CSV súboru s výsledkami</h3>
                 <form action="admin-index.php" method="post" enctype="multipart/form-data">
 
@@ -246,12 +246,12 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     </div>
 
                     <div class="col-sm-6" style="margin: 3% auto;">
-                        <input type="text" class="form-control" name="course_title" placeholder="Názov predmetu:">
+                        <input type="text" class="form-control" required name="course_title" placeholder="Názov predmetu:">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6" style="margin: 3% auto;">
-                        <input type="file" class="custom-file-input" id="customFile" name="csv_file">
+                        <input type="file" class="custom-file-input" id="customFile" name="csv_file" required>
                         <label class="custom-file-label" for="customFile">Vyber CSV súbor s výsledkami</label>
                     </div>
                     <div class="input-group col-sm-6" style="margin: 3% auto;">
@@ -268,15 +268,22 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                         <button type="submit" name="submit" class="btn btn-primary">Nahraj CSV a vytvor predmet</button>
                     </div>
                 </form>
+                <div id="successMsg">
+
+                </div>
             </div>
         </div>
     </main>
 </div>
 
 <footer class="footer text-center fixed-bottom navbar-custom" style="height: 50px;">
-    <span class="text-white pd-top">Developed by : LR, DV, MM, SR, MR</span>
+    <span class="text-white pd-top">Vývojári : LR, DV, MM, SR, MR</span>
 </footer>
-
+<script>
+    $("#successMsg").submit({
+        this.innerHTML = 'Pridanie predmetu bolo úspešné.';
+    })
+</script>
 <?php
 } elseif($_COOKIE['lang'] == 'en') {
 ?>
@@ -286,7 +293,7 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ADMIN</title>
+    <title>Admin Task 1</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -302,8 +309,8 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
 <body>
     <header>
         <nav class="navbar navbar-light navbar-custom navbar-expand-lg">
-            <a class="navbar-brand" href="./index.php">
-                <img src="admin.png" width="100" height="55" alt="admin">
+            <a class="navbar-brand" href="../general.admin/index.php">
+                <img src="../general.admin/admin.png" width="100" height="55" alt="admin">
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -311,13 +318,16 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../uloha1/admin-index.php">Task 1</a>
+                        <a class="nav-link" href="admin-index.php">Task 1</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../uloha2/admin-index.php">Task 2</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../uloha3/admin-index.php">Task 3</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="results.php">Results manipulation</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
@@ -331,14 +341,11 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                     </li>
                 </ul>
                 <span class="navbar-text text-right text-white">Username : admin &nbsp;</span>
-                <a href="logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
+                <a href="../general.admin/logout.php"><i class="material-icons nav-icon pt-2">exit_to_app</i></a>
             </div>
         </nav>
     </header>
-    <div>
-        <div class="col-sm-12 text-center">
-            <a class="btn btn-primary" href="results.php">Go to results page</a>
-        </div>
+    <div class="container">
         <main>
             <div class="container mt-3">
                 <div class="container-fluid">
@@ -362,12 +369,12 @@ if(!isset($_COOKIE['isAdmin']) and $_COOKIE['isAdmin'] !== 'admin')
                             </div>
 
                             <div class="col-sm-6" style="margin: 3% auto;">
-                                <input type="text" class="form-control" name="course_title" placeholder="Course title:">
+                                <input type="text" class="form-control" name="course_title" required placeholder="Course title:">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6" style="margin: 3% auto;">
-                                <input type="file" class="custom-file-input" id="customFile" name="csv_file">
+                                <input type="file" class="custom-file-input" required id="customFile" name="csv_file">
                                 <label class="custom-file-label" for="customFile">Choose CSV file:</label>
                             </div>
                             <div class="input-group col-sm-6" style="margin: 3% auto;">
